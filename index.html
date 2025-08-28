@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua Hume - Strategic Inventor & Innovation Consultant</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #fafafa;
+            --text: #1a1a1a;
+            --text-light: #666666;
+            --accent: #0891b2;
+            --accent-dark: #0e7490;
+            --accent-light: #06b6d4;
+            --border: #e5e5e5;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --gradient-start: #ffffff;
+            --gradient-end: #f0fdfa;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0a0a0a;
+            --text: #e5e5e5;
+            --text-light: #999999;
+            --accent: #06b6d4;
+            --accent-dark: #0891b2;
+            --accent-light: #22d3ee;
+            --border: #333333;
+            --card-bg: rgba(26, 26, 26, 0.8);
+            --gradient-start: #0a0a0a;
+            --gradient-end: #0a1418;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* Background decoration */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, var(--accent) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--accent-light) 0%, transparent 50%);
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(8, 145, 178, 0.2);
+            padding: 0.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(8, 145, 178, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(8, 145, 178, 0.2);
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            padding-bottom: 0.2rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 3rem 0 1.5rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            letter-spacing: -0.01em;
+        }
+
+        /* Intro section */
+        .intro {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+        }
+
+        .intro h1 {
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .intro-text {
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 2rem;
+        }
+
+        /* Project cards */
+        .projects {
+            margin: 4rem 0;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(8, 145, 178, 0.1);
+            padding: 2rem;
+            border-radius: 16px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+            animation-delay: var(--delay);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(8, 145, 178, 0.3);
+            box-shadow: 0 20px 40px rgba(8, 145, 178, 0.15);
+        }
+
+        .project-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .project-type {
+            font-size: 0.875rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .project-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        /* How I help section */
+        .help-section {
+            margin: 4rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+            animation-delay: 0.6s;
+        }
+
+        .help-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(8, 145, 178, 0.1);
+            padding: 2.5rem;
+            border-radius: 16px;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(8, 145, 178, 0.08);
+        }
+
+        .help-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .help-list li {
+            padding: 0.75rem 0;
+            color: var(--text);
+            font-size: 1.1rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .help-list li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .fee-note {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(8, 145, 178, 0.05) 0%, rgba(8, 145, 178, 0.02) 100%);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Contact section */
+        .contact {
+            margin: 4rem 0 2rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards;
+            animation-delay: 0.8s;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-links a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--accent);
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            background: transparent;
+            letter-spacing: -0.01em;
+        }
+
+        .contact-links a:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(8, 145, 178, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .intro-text {
+                font-size: 1.1rem;
+            }
+
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .help-content {
+                padding: 1.5rem;
+            }
+
+            .fee-note {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path class="sun" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            <path class="moon" d="M12 3a6 6 0 00 9 9 9 9 0 11-9-9z" style="display: none;"/>
+        </svg>
+    </button>
+
+    <div class="container">
+        <!-- Intro -->
+        <section class="intro">
+            <h1>Strategic innovation, made accessible</h1>
+            <p class="intro-text">
+                I'm a strategic inventor who helps turn promising ideas into tangible reality. Whether you're an individual with a spark or a small startup ready to build, I provide the expertise to navigate from concept through proof-of-concept to first product. Physical consumer products are my bread and butter, though I build digital solutions too.
+            </p>
+            <p class="intro-text">
+                My approach combines strategic thinking with practical building. I'll transfer the knowledge and methods that let you run your venture independently – no long-term dependency on consultants.
+            </p>
+        </section>
+
+        <!-- Current work -->
+        <section class="projects">
+            <h2>What I'm working on</h2>
+            <div class="project-grid">
+                <div class="project-card" style="--delay: 0.2s">
+                    <div class="project-type">Day Job</div>
+                    <div class="project-title">Future Innovation Strategy</div>
+                    <div class="project-description">
+                        Researching and developing moonshot ideas and step-change innovations for the 3-5 year horizon. Transforming tomorrow's possibilities into today's strategic roadmaps.
+                    </div>
+                </div>
+
+                <div class="project-card" style="--delay: 0.3s">
+                    <div class="project-type">Independent</div>
+                    <div class="project-title">U-Bell by ABMAT</div>
+                    <div class="project-description">
+                        Invented, developed, patented and licensed the U-Bell kettlebell – now sold globally by ABMAT.com. From initial sketch to international distribution.
+                    </div>
+                </div>
+
+                <div class="project-card" style="--delay: 0.4s">
+                    <div class="project-type">Independent</div>
+                    <div class="project-title">MobilityAge.co.uk</div>
+                    <div class="project-description">
+                        Built an AI-powered movement analysis app from scratch. Helps consumers, professionals and occupational health teams discover and improve their mobility age through personalised insights.
+                    </div>
+                </div>
+
+                <div class="project-card" style="--delay: 0.5s">
+                    <div class="project-type">Consulting</div>
+                    <div class="project-title">Rapid Hardware Prototyping</div>
+                    <div class="project-description">
+                        Recent examples: 3D printed a sizing prototype in 48 hours for one client, integrated electronics from two products to test another's concept. Quick, dirty, effective.
+                    </div>
+                </div>
+
+                <div class="project-card" style="--delay: 0.6s">
+                    <div class="project-type">Consulting</div>
+                    <div class="project-title">Passion Project Acceleration</div>
+                    <div class="project-description">
+                        Hands-on guidance through the 0-to-1 journey. Nothing excites me more than rolling up my sleeves to help passionate founders turn their ideas into something they can hold, test and refine.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How I help -->
+        <section class="help-section">
+            <h2>How I might be able to help</h2>
+            <div class="help-content">
+                <p>
+                    If you have an idea but don't know where to start, or can't afford the traditional development route, we should talk. I work with passionate individuals and small teams on:
+                </p>
+                <ul class="help-list">
+                    <li>Consumer products that solve genuine problems</li>
+                    <li>Health-tech innovations that improve quality of life</li>
+                    <li>Ingredient technologies with meaningful benefits</li>
+                    <li>Wellness tools that address real needs</li>
+                </ul>
+                <p style="margin: 2rem 0 1.5rem;">
+                    <strong>Two ways I can help:</strong>
+                </p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                    <div style="padding: 1.5rem; background: rgba(8, 145, 178, 0.03); border-radius: 12px; border: 1px solid rgba(8, 145, 178, 0.1);">
+                        <h3 style="color: var(--accent); font-size: 1.1rem; margin-bottom: 0.75rem;">Hands-on Building</h3>
+                        <p style="font-size: 0.95rem; margin: 0;">
+                            I'll build alongside you. From 3D printing proof-of-concepts to Frankensteining electronics from existing products, I make ideas tangible fast. Combined with AI for apps and websites (like MobilityAge), we can prototype anything – physical or digital – at a fraction of traditional costs.
+                        </p>
+                    </div>
+                    <div style="padding: 1.5rem; background: rgba(8, 145, 178, 0.03); border-radius: 12px; border: 1px solid rgba(8, 145, 178, 0.1);">
+                        <h3 style="color: var(--accent); font-size: 1.1rem; margin-bottom: 0.75rem;">Strategic Advisory</h3>
+                        <p style="font-size: 0.95rem; margin: 0;">
+                            Traditional consulting and fractional innovation leadership. I'll guide your strategy, connect you with the right people, and help navigate the innovation journey – without getting my hands dirty in the build.
+                        </p>
+                    </div>
+                </div>
+                <p>
+                    Whether it's 3D printing a proof-of-concept, hacking together electronics from off-the-shelf products, or building a complete app from scratch – I make ideas tangible quickly. This rapid prototyping approach lets you test, learn and iterate without massive upfront investment.
+                </p>
+                <p>
+                    The goal is simple: transfer the methods and knowledge so you can lead your venture forward independently.
+                </p>
+                
+                <div class="fee-note">
+                    <p style="margin-bottom: 0;">
+                        <strong>A different approach to fees:</strong> Quick-and-dirty prototyping and AI development have slashed the cost of innovation. I pass those savings on. Great ideas shouldn't be held back by upfront costs. Happy to discuss creative arrangements, including reduced fees in exchange for a small stake in ventures I believe in. Let's find what works for both of us.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section class="contact">
+            <h2>Ready to build something?</h2>
+            <p>If you're passionate about your idea and ready to make it real, let's have a conversation.</p>
+            <div class="contact-links">
+                <a href="mailto:joshume@hotmail.com">Email me</a>
+                <a href="https://www.linkedin.com/in/joshua-hume-7505593b/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const sunPath = themeToggle.querySelector('.sun');
+        const moonPath = themeToggle.querySelector('.moon');
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                sunPath.style.display = 'none';
+                moonPath.style.display = 'block';
+            } else {
+                sunPath.style.display = 'block';
+                moonPath.style.display = 'none';
+            }
+        }
+
+        // Intersection observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.intro, .project-card, .help-section, .contact').forEach(el => {
+            el.style.animationPlayState = 'paused';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
