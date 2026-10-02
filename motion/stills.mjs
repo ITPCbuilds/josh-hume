@@ -8,7 +8,8 @@ const [,, out, ...times] = process.argv;
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 1080, height: 1350 } });
 await p.goto(pathToFileURL(path.join(here, 'index.html')).href + '?render=1');
-await p.evaluate(() => document.fonts.ready);
+p.on('pageerror', (e) => console.log('PAGE ERROR', e.message));
+await p.waitForFunction(() => window.__ready === true);
 for (const t of times) {
   await p.evaluate((x) => window.seek(x), +t);
   await p.screenshot({ path: path.join(out, `still-${String(t).padStart(5, '0')}.png`) });

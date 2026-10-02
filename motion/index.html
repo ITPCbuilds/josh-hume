@@ -3,466 +3,937 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=1080">
-<title>Joshua Hume | Motion</title>
+<title>Joshua Hume | Showreel</title>
 <style>
 @font-face { font-family: "Archivo"; src: url(../fonts/archivo-var-latin.woff2) format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; }
 @font-face { font-family: "IBM Plex Mono"; src: url(../fonts/plex-mono-400-latin.woff2) format("woff2"); font-weight: 400; }
 @font-face { font-family: "IBM Plex Mono"; src: url(../fonts/plex-mono-500-latin.woff2) format("woff2"); font-weight: 500; }
 
-:root {
-  --print: #0F2A82;
-  --ink: #FFFFFF;
-  --ink-2: #C9D4F7;
-  --ink-3: #93A8EC;
-  --sans: "Archivo", Arial, sans-serif;
-  --mono: "IBM Plex Mono", Menlo, monospace;
-}
+:root { --sans: "Archivo", Arial, sans-serif; --mono: "IBM Plex Mono", Menlo, monospace; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: #050d2b; }
 body { display: grid; place-items: center; min-height: 100vh; }
 body.render { display: block; min-height: 0; }
 
-#stage {
-  position: relative; width: 1080px; height: 1350px; overflow: hidden;
-  background: var(--print); color: var(--ink);
-  font-family: var(--sans); -webkit-font-smoothing: antialiased;
-}
-#clip { position: absolute; inset: 0; clip-path: inset(37px); }
-#sheet { position: absolute; left: 0; top: 0; width: 1080px; height: 6750px; will-change: transform; }
-#grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.12) 1.5px, transparent 1.5px),
-    linear-gradient(90deg, rgba(255,255,255,.12) 1.5px, transparent 1.5px),
-    linear-gradient(rgba(255,255,255,.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px);
-  background-size: 150px 150px, 150px 150px, 30px 30px, 30px 30px;
-  background-position: 15px 15px;
-}
-#vignette {
-  position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,0) 55%, rgba(3,10,40,.42) 100%);
-}
-.scene { position: absolute; left: 0; width: 1080px; height: 1350px; }
-.abs { position: absolute; }
-svg { overflow: visible; }
+#stage { position: relative; width: 1080px; height: 1350px; overflow: hidden; background: #0F2A82; color: #fff; font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+#cv, #fr { position: absolute; inset: 0; }
+#vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, rgba(0,0,0,0) 55%, rgba(3,10,40,.42) 100%); }
+#txt { position: absolute; inset: 0; clip-path: inset(37px); }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
 
-.mask { overflow: hidden; display: block; padding-bottom: .08em; }
-.mask > span { display: block; will-change: transform; }
-
-.mono { font-family: var(--mono); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
-.lbl { font-size: 28px; color: var(--ink-3); }
-.big { font-weight: 800; font-stretch: 118%; letter-spacing: -0.035em; line-height: .98; }
-.body { font-size: 46px; line-height: 1.22; font-weight: 500; font-stretch: 104%; letter-spacing: -0.01em; color: var(--ink); }
-.body.soft { color: var(--ink-2); }
-
-.st { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.ph { fill: none; stroke: var(--ink-3); stroke-width: 2; stroke-dasharray: 10 8; }
-.ld { fill: none; stroke: var(--ink-3); stroke-width: 1.6; }
-svg text { font-family: var(--mono); font-weight: 500; fill: var(--ink-3); letter-spacing: .06em; }
-
-/* title block */
-.tb { position: absolute; border: 3px solid #fff; }
-.tb-cell { position: absolute; padding: 18px 22px; }
-.tb-cell .k { font-family: var(--mono); font-weight: 500; font-size: 22px; letter-spacing: .1em; color: var(--ink-3); text-transform: uppercase; }
-.tb-cell .v { font-size: 38px; font-weight: 600; font-stretch: 106%; margin-top: 6px; letter-spacing: -0.01em; }
-.tb-cell .v.m { font-family: var(--mono); font-weight: 500; font-size: 30px; letter-spacing: .02em; }
+.t { position: absolute; white-space: pre; }
+.t .ln { display: block; overflow: hidden; padding: 0 .06em .14em 0; margin-bottom: -.14em; }
+.t .u { display: inline-block; will-change: transform; }
+.big { font-weight: 800; font-stretch: 118%; letter-spacing: -.035em; line-height: 1; }
+.sub { font-weight: 500; font-stretch: 104%; letter-spacing: -.01em; color: #C9D4F7; line-height: 1.2; }
+.mono { font-family: var(--mono); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: #93A8EC; }
+.caret { display: inline-block; width: .55em; height: .9em; margin-left: .08em; vertical-align: -.08em; background: #fff; }
 </style>
 </head>
 <body>
 <div id="stage">
-  <div id="clip"><div id="sheet">
-    <div id="grid"></div>
-
-    <!-- 0 · Name -->
-    <section class="scene" style="top:0">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="0.35" data-fx="fade">Sheet 1 · Kirkburton, West Yorkshire</div>
-      <div class="abs big" style="left:90px;top:330px;font-size:200px">
-        <span class="mask"><span data-in="0.5" data-fx="rise">Joshua</span></span>
-        <span class="mask"><span data-in="0.66" data-fx="rise">Hume</span></span>
-      </div>
-      <svg class="abs" style="left:96px;top:760px" width="890" height="60" viewBox="0 0 890 60" data-draw="1.2" data-dur="0.9">
-        <path class="ld" d="M0 10 L0 50 M888 10 L888 50"/>
-        <path class="ld" d="M0 30 L888 30"/>
-        <path class="ld" d="M0 30 L18 22 M0 30 L18 38 M888 30 L870 22 M888 30 L870 38"/>
-      </svg>
-      <div class="abs body" style="left:96px;top:860px;width:860px;font-size:58px;font-weight:600;line-height:1.16">
-        <span class="mask"><span data-in="1.45" data-fx="rise">I design products, get them</span></span>
-        <span class="mask"><span data-in="1.57" data-fx="rise">protected and get them made.</span></span>
-      </div>
-    </section>
-
-    <!-- 1 · KettleCross -->
-    <section class="scene" style="top:1350px">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="4.0" data-fx="fade">Fig. 1 · Front view</div>
-      <div class="abs big" style="left:92px;top:168px;font-size:112px"><span class="mask"><span data-in="4.1" data-fx="rise">KettleCross</span></span></div>
-      <svg class="abs" style="left:240px;top:318px" width="600" height="518" viewBox="0 0 440 380" data-draw="4.35" data-dur="1.1" data-stagger="0.12">
-        <path class="st" d="M92 214 C92 98 142 52 220 52 C298 52 348 98 348 214"/>
-        <path class="st" d="M130 214 C130 120 166 90 220 90 C274 90 310 120 310 214"/>
-        <path class="st" d="M81 318 A60 60 0 1 1 141 318 Z"/>
-        <path class="st" d="M299 318 A60 60 0 1 1 359 318 Z"/>
-        <path class="st" d="M66 318 L156 318 M284 318 L374 318"/>
-        <path class="st" d="M196 52 L196 90 M244 52 L244 90"/>
-      </svg>
-      <svg class="abs" style="left:240px;top:318px" width="600" height="518" viewBox="0 0 440 380">
-        <g data-in="5.9" data-fx="fade"><path class="ph" d="M190 20 L190 368 M250 20 L250 368"/></g>
-        <g data-in="5.7" data-fx="fade">
-          <path class="ld" d="M300 70 Q330 40 362 34"/><text x="368" y="39" font-size="15">10</text>
-          <path class="ld" d="M60 268 Q36 252 30 226"/><text x="16" y="218" font-size="15">12</text>
-          <path class="ld" d="M380 268 Q404 252 410 226"/><text x="402" y="218" font-size="15">14</text>
-        </g>
-      </svg>
-      <div class="abs body soft" style="left:96px;top:872px;width:900px;font-size:40px" data-in="6.3" data-fx="fade">Your forearm sits in the gap, so your wrist stays straight overhead.</div>
-      <div class="abs mono" style="left:96px;top:996px;font-size:30px;color:#fff" data-in="7.0" data-fx="fade">US design patent D1,001,923</div>
-      <div class="abs body" style="left:96px;top:1046px;width:900px;font-size:44px">
-        <span class="mask"><span data-in="7.3" data-fx="rise">Licensed to AbMat and sold in the US</span></span>
-        <span class="mask"><span data-in="7.42" data-fx="rise">and Canada as the U-Bell</span></span>
-      </div>
-      <div id="weights" class="abs" style="left:96px;top:1180px;width:900px;height:80px"></div>
-    </section>
-
-    <!-- 2 · Mobility Age -->
-    <section class="scene" style="top:2700px">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="11.2" data-fx="fade">Fig. 2 · Side view, deep squat</div>
-      <div class="abs big" style="left:92px;top:168px;font-size:112px"><span class="mask"><span data-in="11.3" data-fx="rise">Mobility Age</span></span></div>
-      <svg id="skel" class="abs" style="left:0;top:0" width="1080" height="1350" viewBox="0 0 1080 1350"></svg>
-      <div class="abs" style="left:770px;top:420px;width:240px" data-in="12.0" data-fx="fade">
-        <div class="mono lbl">Knee</div>
-        <div id="kneeVal" class="mono" style="font-size:96px;letter-spacing:-.02em;color:#fff;line-height:1.05">180°</div>
-        <div class="mono lbl" style="margin-top:34px">Hip</div>
-        <div id="hipVal" class="mono" style="font-size:96px;letter-spacing:-.02em;color:#fff;line-height:1.05">180°</div>
-      </div>
-      <div class="abs body" style="left:96px;top:1020px;width:900px;font-size:48px">
-        <span class="mask"><span data-in="12.7" data-fx="rise">Four phone photos give you</span></span>
-        <span class="mask"><span data-in="12.82" data-fx="rise">a mobility age</span></span>
-      </div>
-      <div class="abs mono" style="left:96px;top:1160px;font-size:30px;color:#fff" data-in="14.3" data-fx="fade">Pose error 4 to 6° · was 10 to 12°</div>
-      <div class="abs mono lbl" style="left:96px;top:1210px" data-in="15.2" data-fx="fade">mobilityage.co.uk · also for PTs and physios</div>
-    </section>
-
-    <!-- 3 · Other work -->
-    <section class="scene" style="top:4050px">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="18.5" data-fx="fade">Sheet 3 · In The Park Consulting Ltd</div>
-      <div class="abs big" style="left:92px;top:168px;font-size:112px"><span class="mask"><span data-in="18.6" data-fx="rise">Other work</span></span></div>
-      <svg class="abs" style="left:0;top:0" width="1080" height="1350" viewBox="0 0 1080 1350">
-        <path id="spine" class="ld" d="M140 380 L140 1170" stroke="#fff" stroke-width="2.5" pathLength="1" stroke-dasharray="1 1"/>
-      </svg>
-      <div id="log"></div>
-    </section>
-
-    <!-- 4 · Title block -->
-    <section class="scene" style="top:5400px">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="25.6" data-fx="fade">Sheet 4 of 4</div>
-      <svg class="abs" style="left:96px;top:330px" width="888" height="820" viewBox="0 0 888 820" data-draw="25.7" data-dur="0.8" data-stagger="0.07">
-        <path class="st" stroke-width="3" d="M0 0 L888 0 L888 820 L0 820 Z"/>
-        <path class="st" stroke-width="3" d="M0 220 L888 220"/>
-        <path class="st" stroke-width="3" d="M0 390 L888 390"/>
-        <path class="st" stroke-width="3" d="M0 560 L888 560"/>
-        <path class="st" stroke-width="3" d="M0 690 L888 690"/>
-        <path class="st" stroke-width="3" d="M620 560 L620 690"/>
-        <path class="st" stroke-width="3" d="M444 690 L444 820"/>
-      </svg>
-      <div class="tb-cell" style="left:96px;top:330px;width:888px">
-        <div class="k" data-in="26.2" data-fx="fade">Name</div>
-        <div class="big" style="font-size:100px;margin-top:22px;white-space:nowrap"><span class="mask"><span data-in="26.25" data-fx="rise">Joshua Hume</span></span></div>
-      </div>
-      <div class="tb-cell" style="left:96px;top:550px;width:888px" data-in="26.6" data-fx="fade">
-        <div class="k">Day job</div><div class="v">Category &amp; Innovation Lead, Mayborn Group</div>
-      </div>
-      <div class="tb-cell" style="left:96px;top:720px;width:888px" data-in="26.8" data-fx="fade">
-        <div class="k">Own work</div><div class="v">In The Park Consulting Ltd</div>
-      </div>
-      <div class="tb-cell" style="left:96px;top:890px;width:620px" data-in="27.0" data-fx="fade">
-        <div class="k">Site</div><div class="v m" style="font-size:28px">itpcbuilds.github.io/josh-hume</div>
-      </div>
-      <div class="tb-cell" style="left:716px;top:890px;width:268px" data-in="27.1" data-fx="fade">
-        <div class="k">Date</div><div class="v m">Oct 2026</div>
-      </div>
-      <div class="tb-cell" style="left:96px;top:1020px;width:444px" data-in="27.4" data-fx="fade">
-        <div class="k">Drawn</div><div class="v m">Claude</div>
-      </div>
-      <div class="tb-cell" style="left:540px;top:1020px;width:444px" data-in="27.6" data-fx="fade">
-        <div class="k">Checked</div><div class="v m">J. Hume</div>
-      </div>
-    </section>
-  </div></div>
-
-  <div id="vignette"></div>
-
-  <!-- fixed drawing-sheet border -->
-  <svg id="frame" class="abs" style="left:0;top:0" width="1080" height="1350" viewBox="0 0 1080 1350" data-draw="0.1" data-dur="1.2">
-    <path class="st" stroke-width="2" stroke-opacity=".85" d="M36 36 L1044 36 L1044 1314 L36 1314 Z"/>
-  </svg>
-  <svg class="abs" style="left:0;top:0" width="1080" height="1350" viewBox="0 0 1080 1350" data-in="0.8" data-fx="fade">
-    <g id="zones"></g>
-  </svg>
+  <canvas id="cv" width="1080" height="1350"></canvas>
+  <div id="vig"></div>
+  <div id="txt"></div>
+  <canvas id="fr" width="1080" height="1350"></canvas>
+  <div id="flash"></div>
 </div>
 
 <script>
 (function () {
-  var NS = 'http://www.w3.org/2000/svg';
-  var DURATION = 31;
-  window.DURATION = DURATION;
+'use strict';
+var W = 1080, H = 1350, D2R = Math.PI / 180;
+var DURATION = 38.5;
+window.DURATION = DURATION;
 
-  // ---------- easing and timing ----------
-  function clamp(x) { return x < 0 ? 0 : x > 1 ? 1 : x; }
-  var E = {
-    lin: function (x) { return x; },
-    out: function (x) { return 1 - Math.pow(1 - x, 3); },
-    out5: function (x) { return 1 - Math.pow(1 - x, 5); },
-    io: function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; },
-    back: function (x) { var c = 1.4; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); }
-  };
-  function P(t, a, d, e) { return (E[e || 'out'])(clamp((t - a) / d)); }
-  function el(tag, attrs, parent) {
-    var n = document.createElementNS(NS, tag);
-    for (var k in attrs) n.setAttribute(k, attrs[k]);
-    if (parent) parent.appendChild(n);
-    return n;
+var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+var WHITE = '#FFFFFF', SOFT = '#C9D4F7', DIM = '#93A8EC', BG = '#0F2A82';
+var LW = 1; // stroke multiplier, raised when drawing scaled-down figures
+
+/* ================= maths and easing ================= */
+function clamp(x, a, b) { a = a == null ? 0 : a; b = b == null ? 1 : b; return x < a ? a : x > b ? b : x; }
+function lerp(a, b, t) { return a + (b - a) * t; }
+var E = {
+  lin: function (x) { return x; },
+  out: function (x) { return 1 - Math.pow(1 - x, 3); },
+  out5: function (x) { return 1 - Math.pow(1 - x, 5); },
+  in: function (x) { return x * x * x; },
+  io: function (x) { return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; },
+  io5: function (x) { return x < .5 ? 16 * Math.pow(x, 5) : 1 - Math.pow(-2 * x + 2, 5) / 2; },
+  back: function (x) { var c = 1.7; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); }
+};
+function P(t, a, d, e) { return E[e || 'out'](clamp((t - a) / d)); }
+function env(t, a, b, fi, fo) { return Math.min(P(t, a, fi || .3), 1 - P(t, b, fo || .3, 'in')); }
+
+/* ================= 2D geometry ================= */
+function bez(p0, p1, p2, p3, n) {
+  n = n || 40; var o = [];
+  for (var i = 0; i <= n; i++) {
+    var s = i / n, u = 1 - s;
+    o.push([u*u*u*p0[0] + 3*u*u*s*p1[0] + 3*u*s*s*p2[0] + s*s*s*p3[0],
+            u*u*u*p0[1] + 3*u*u*s*p1[1] + 3*u*s*s*p2[1] + s*s*s*p3[1]]);
   }
-  var tracks = [];
+  return o;
+}
+function arc(cx, cy, r, a0, a1, n) {
+  n = n || 64; var o = [];
+  for (var i = 0; i <= n; i++) { var a = a0 + (a1 - a0) * i / n; o.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]); }
+  return o;
+}
+function circ(cx, cy, r, n) { return arc(cx, cy, r, -Math.PI / 2, 1.5 * Math.PI, n || 72); }
+function rrect(x, y, w, h, r) {
+  var q = Math.PI / 2, o = [];
+  o = o.concat(arc(x + w - r, y + r, r, -q, 0, 8), arc(x + w - r, y + h - r, r, 0, q, 8),
+               arc(x + r, y + h - r, r, q, 2 * q, 8), arc(x + r, y + r, r, 2 * q, 3 * q, 8));
+  o.push(o[0].slice());
+  return o;
+}
+function cum(p) { var c = [0]; for (var i = 1; i < p.length; i++) c.push(c[i-1] + Math.hypot(p[i][0]-p[i-1][0], p[i][1]-p[i-1][1])); return c; }
+function resample(p, n) {
+  var c = cum(p), L = c[c.length - 1], o = [], j = 0;
+  for (var i = 0; i < n; i++) {
+    var d = L * i / (n - 1);
+    while (j < c.length - 2 && c[j + 1] < d) j++;
+    var f = (d - c[j]) / ((c[j + 1] - c[j]) || 1);
+    o.push([lerp(p[j][0], p[j+1][0], f), lerp(p[j][1], p[j+1][1], f)]);
+  }
+  return o;
+}
+function mixP(A, B, t) { return A.map(function (p, i) { return [lerp(p[0], B[i][0], t), lerp(p[1], B[i][1], t)]; }); }
+function rotP(p, c, a) { var s = Math.sin(a), k = Math.cos(a), x = p[0] - c[0], y = p[1] - c[1]; return [c[0] + x * k - y * s, c[1] + x * s + y * k]; }
 
-  // ---------- declarative entrances ----------
-  document.querySelectorAll('[data-fx]').forEach(function (n) {
-    var a = +n.dataset.in, fx = n.dataset.fx;
-    tracks.push(function (t) {
-      if (fx === 'rise') {
-        var p = P(t, a, .75, 'out5');
-        n.style.transform = 'translateY(' + ((1 - p) * 105).toFixed(2) + '%)';
-      } else {
-        var q = P(t, a, .55, 'out');
-        n.style.opacity = q.toFixed(3);
-        n.style.transform = 'translateY(' + ((1 - q) * 14).toFixed(2) + 'px)';
+/* ================= drawing primitives ================= */
+function pen(x, y, a) {
+  ctx.save(); ctx.globalAlpha *= (a == null ? 1 : a);
+  var R = 24 * LW, g = ctx.createRadialGradient(x, y, 0, x, y, R);
+  g.addColorStop(0, 'rgba(255,255,255,.6)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.fill();
+  ctx.fillStyle = WHITE; ctx.beginPath(); ctx.arc(x, y, 4.4 * LW, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function poly(pts, prog, o) {
+  o = o || {}; prog = prog == null ? 1 : prog;
+  var a = o.a == null ? 1 : o.a;
+  if (prog <= 0 || a <= 0 || !pts || pts.length < 2) return;
+  var c = cum(pts), L = c[c.length - 1] * clamp(prog), end = pts[0];
+  ctx.save(); ctx.globalAlpha *= a;
+  ctx.strokeStyle = o.col || WHITE; ctx.lineWidth = (o.w || 2.6) * LW; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (o.dash) ctx.setLineDash(o.dash.map(function (v) { return v * LW; }));
+  ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
+  for (var i = 1; i < pts.length; i++) {
+    if (c[i] <= L) { ctx.lineTo(pts[i][0], pts[i][1]); end = pts[i]; }
+    else { var f = (L - c[i-1]) / ((c[i] - c[i-1]) || 1); end = [lerp(pts[i-1][0], pts[i][0], f), lerp(pts[i-1][1], pts[i][1], f)]; ctx.lineTo(end[0], end[1]); break; }
+  }
+  if (o.fill) { ctx.fillStyle = o.fill; ctx.fill(); }
+  ctx.stroke(); ctx.restore();
+  if (o.pen && prog > 0 && prog < 1) pen(end[0], end[1], a);
+}
+function seg(a, b, prog, o) { poly([a, b], prog, o); }
+function dot(x, y, r, a, col) { if ((a != null && a <= 0) || r <= 0) return; ctx.save(); ctx.globalAlpha *= (a == null ? 1 : a); ctx.fillStyle = col || WHITE; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); ctx.restore(); }
+function ring(x, y, r, a, w) { if ((a != null && a <= 0) || r <= 0) return; ctx.save(); ctx.globalAlpha *= (a == null ? 1 : a); ctx.strokeStyle = WHITE; ctx.lineWidth = (w || 2.4) * LW; ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.stroke(); ctx.restore(); }
+function text(s, x, y, o) {
+  o = o || {}; var a = o.a == null ? 1 : o.a; if (a <= 0) return;
+  ctx.save(); ctx.globalAlpha *= a; ctx.fillStyle = o.col || DIM;
+  ctx.font = (o.weight || 500) + ' ' + (o.size || 22) + 'px ' + (o.sans ? 'Archivo' : '"IBM Plex Mono"');
+  if (o.sans) ctx.fontStretch = 'expanded';
+  ctx.letterSpacing = (o.ls == null ? 1.5 : o.ls) + 'px';
+  ctx.textAlign = o.align || 'left'; ctx.textBaseline = o.base || 'alphabetic';
+  ctx.fillText(s, x, y); ctx.restore();
+}
+function arrowHead(a, b, prog, o) {
+  if (prog <= 0) return;
+  var ang = Math.atan2(b[1] - a[1], b[0] - a[0]), L = 16;
+  var p1 = [b[0] - L * Math.cos(ang - .45), b[1] - L * Math.sin(ang - .45)], p2 = [b[0] - L * Math.cos(ang + .45), b[1] - L * Math.sin(ang + .45)];
+  poly([p1, b, p2], prog, o);
+}
+
+/* ================= 3D ================= */
+function rot3(p, yaw, pitch) {
+  var cy = Math.cos(yaw), sy = Math.sin(yaw), cp = Math.cos(pitch), sp = Math.sin(pitch);
+  var x1 = p[0] * cy + p[2] * sy, z1 = -p[0] * sy + p[2] * cy;
+  return [x1, p[1] * cp - z1 * sp, p[1] * sp + z1 * cp];
+}
+function pr(p, c) {
+  var r = rot3(p, c.yaw || 0, c.pitch || 0), f = 1 / (1 + (c.persp || 0) * r[2] / (c.D || 800));
+  return [c.ox + c.s * r[0] * f, c.oy + c.s * r[1] * f, r[2], f];
+}
+function line3(pts, c, prog, o) {
+  o = o || {}; prog = prog == null ? 1 : prog;
+  var a = o.a == null ? 1 : o.a; if (prog <= 0 || a <= 0) return;
+  var sp = pts.map(function (p) { return pr(p, c); }), n = sp.length - 1, cut = clamp(prog) * n, zr = o.zr || 140;
+  ctx.save(); ctx.strokeStyle = WHITE; ctx.lineWidth = (o.w || 2.2) * LW; ctx.lineCap = 'round';
+  for (var i = 0; i < n && i < cut; i++) {
+    var A = sp[i], B = sp[i + 1];
+    if (i + 1 > cut) { var f = cut - i; B = [lerp(A[0], B[0], f), lerp(A[1], B[1], f), lerp(A[2], B[2], f)]; }
+    var z = (A[2] + B[2]) / 2;
+    ctx.globalAlpha = a * (o.flat ? 1 : lerp(1, .14, clamp((z + zr) / (2 * zr))));
+    ctx.beginPath(); ctx.moveTo(A[0], A[1]); ctx.lineTo(B[0], B[1]); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ================= camera and grid ================= */
+var CAM_MOVES = [
+  // start, duration, x, y, zoom, ease
+  [-0.5, 3.9, 540, 655, 1.06, 'out'],
+  [3.4, 1.2, 540, 675, 1, 'io'],
+  [8.5, .65, 610, 560, 1.14, 'io'],
+  [9.15, .95, 540, 675, 1, 'io'],
+  [30.66, .5, 0, 0, 1.85, 'io'],   // x, y filled in from the bounce point
+  [31.3, .55, 540, 675, 1, 'io'],
+  [33.45, 1.25, 786, 1150, 25, 'io5']
+];
+function camera(t) {
+  var x = 540, y = 675, z = 1;
+  for (var i = 0; i < CAM_MOVES.length; i++) {
+    var m = CAM_MOVES[i], p = P(t, m[0], m[1], m[5]);
+    if (p <= 0) continue;
+    x = lerp(x, m[2], p); y = lerp(y, m[3], p); z = z * Math.pow(m[4] / z, p);
+  }
+  var sh = t > 17.9 ? Math.exp(-(t - 17.9) * 13) * 7 : 0;
+  x += Math.sin(t * 95) * sh; y += Math.cos(t * 81) * sh;
+  return { x: x, y: y, z: z };
+}
+function gridAlpha(ss) { return ss < 8 ? 0 : ss < 30 ? .055 * (ss - 8) / 22 : ss < 150 ? .055 + .065 * (ss - 30) / 120 : .12; }
+function grid(cam) {
+  // A grid that repeats every factor of five, so a 5x zoom lands on the same picture
+  var z = cam.z, k0 = Math.ceil(Math.log(8 / (30 * z)) / Math.log(5)), s0 = 30 * Math.pow(5, k0), off = 15;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ['x', 'y'].forEach(function (ax) {
+    var c = ax === 'x' ? cam.x : cam.y, half = (ax === 'x' ? W : H) / 2 / z;
+    var n0 = Math.floor((c - half - off) / s0), n1 = Math.ceil((c + half - off) / s0);
+    for (var n = n0; n <= n1; n++) {
+      var m = 0, q = n; while (m < 4 && q % 5 === 0) { q /= 5; m++; }
+      var ss = s0 * Math.pow(5, m) * z, a = gridAlpha(ss);
+      if (a <= 0.002) continue;
+      var w = (n * s0 + off - c) * z + (ax === 'x' ? W : H) / 2;
+      ctx.strokeStyle = 'rgba(255,255,255,' + a.toFixed(4) + ')';
+      ctx.lineWidth = ss >= 150 ? 1.5 : 1;
+      ctx.beginPath();
+      if (ax === 'x') { ctx.moveTo(w, 0); ctx.lineTo(w, H); } else { ctx.moveTo(0, w); ctx.lineTo(W, w); }
+      ctx.stroke();
+    }
+  });
+  ctx.restore();
+}
+
+/* ================= FIG. 1 KettleCross ================= */
+var KC = { s: 1.75, ox: 540, oy: 640 };
+(function () {
+  var o = [220, 210];
+  function m(p) { return [p[0] - o[0], p[1] - o[1]]; }
+  KC.outer = bez(m([92,214]), m([92,98]), m([142,52]), m([220,52]), 30).concat(bez(m([220,52]), m([298,52]), m([348,98]), m([348,214]), 30).slice(1));
+  KC.inner = bez(m([130,214]), m([130,120]), m([166,90]), m([220,90]), 30).concat(bez(m([220,90]), m([274,90]), m([310,120]), m([310,214]), 30).slice(1));
+  KC.grip = [[[-24,-158],[-24,-120]], [[24,-158],[24,-120]]];
+  KC.wire = [];
+  [-109, 109].forEach(function (cx, side) {
+    var cy = 56, r = 60;
+    [-48, -32, -16, 0, 16, 32, 48].forEach(function (dy, i) {
+      var rr = Math.sqrt(r * r - dy * dy), pts = [];
+      for (var k = 0; k <= 48; k++) { var a = k / 48 * 2 * Math.PI; pts.push([cx + rr * Math.cos(a), cy + dy, rr * Math.sin(a)]); }
+      KC.wire.push({ pts: pts, st: -.35 + i * .05 + side * .12, w: 1.7 });
+    });
+    for (var k = 0; k < 6; k++) {
+      var th = k * 30 * D2R, pts = [];
+      for (var i = 0; i <= 60; i++) { var ps = (-150 + 300 * i / 60) * D2R; pts.push([cx + r * Math.sin(ps) * Math.cos(th), cy - r * Math.cos(ps), r * Math.sin(ps) * Math.sin(th)]); }
+      KC.wire.push({ pts: pts, st: -.1 + k * .06 + side * .12, w: 1.7 });
+    }
+  });
+  var cl = bez([-109,4], [-109,-101], [-66,-139], [0,-139], 24).concat(bez([0,-139], [66,-139], [109,-101], [109,4], 24).slice(1));
+  var frames = cl.map(function (p, i) {
+    var a = cl[Math.max(0, i - 1)], b = cl[Math.min(cl.length - 1, i + 1)], tx = b[0] - a[0], ty = b[1] - a[1], L = Math.hypot(tx, ty);
+    return { c: p, N: [-ty / L, tx / L] };
+  });
+  function tube(fr, al) { return [fr.c[0] + 19 * Math.cos(al) * fr.N[0], fr.c[1] + 19 * Math.cos(al) * fr.N[1], 19 * Math.sin(al)]; }
+  for (var j = 0; j < frames.length; j += 3) {
+    var pts = []; for (var k = 0; k <= 24; k++) pts.push(tube(frames[j], k / 24 * 2 * Math.PI));
+    KC.wire.push({ pts: pts, st: .45 + j * .016, w: 1.9 });
+  }
+  for (var q = 0; q < 8; q++) {
+    var al = q / 8 * 2 * Math.PI;
+    KC.wire.push({ pts: frames.map(function (fr) { return tube(fr, al); }), st: 1.0 + q * .06, w: 1.9, d: 1.1 });
+  }
+  var bx = [-172, 172], by = [-166, 112], bz = [-64, 64], box = [];
+  [[0,0,0,1,0,0],[0,1,0,1,1,0],[0,0,1,1,0,1],[0,1,1,1,1,1],[0,0,0,0,1,0],[1,0,0,1,1,0],[0,0,1,0,1,1],[1,0,1,1,1,1],[0,0,0,0,0,1],[1,0,0,1,0,1],[0,1,0,0,1,1],[1,1,0,1,1,1]].forEach(function (e) {
+    box.push([[bx[e[0]], by[e[1]], bz[e[2]]], [bx[e[3]], by[e[4]], bz[e[5]]]]);
+  });
+  KC.box = box;
+})();
+function kcS(p) { return [KC.ox + KC.s * p[0], KC.oy + KC.s * p[1]]; }
+function kcMass(cx, sc, closeK) {
+  var r = 60 * sc, cy = 108 - 52 * sc, k = closeK || 0;
+  var a0 = lerp(120, 90, k) * D2R, a1 = lerp(420, 450, k) * D2R;
+  var pts = arc(cx, cy, r, a0, a1, 72); pts.push(pts[0].slice());
+  return { pts: pts.map(kcS), c: kcS([cx, cy]), r: r * KC.s, feet: [kcS([cx - 45 * sc, 108]), kcS([cx + 45 * sc, 108])] };
+}
+var KG = { ts: [6.45, 6.9, 7.35, 7.8, 8.25], v: [8, 12, 16, 20, 24] };
+function kgAt(t) {
+  var v = 16, prev = 16, p = 1;
+  for (var i = 0; i < KG.ts.length; i++) if (t >= KG.ts[i]) { prev = v; v = KG.v[i]; p = P(t, KG.ts[i], .34, 'back'); }
+  var sc = function (kg) { return Math.cbrt(kg / 16); };
+  return { v: v, prev: prev, p: p, sc: lerp(sc(prev), sc(v), p) };
+}
+function drawKCOutline(prog, retract, sc, skipRight) {
+  var parts = [KC.outer.map(kcS), KC.inner.map(kcS), KC.grip[0].map(kcS), KC.grip[1].map(kcS)];
+  var L = kcMass(-109, sc), R = kcMass(109, sc);
+  parts.push(L.pts, L.feet); if (!skipRight) parts.push(R.pts, R.feet);
+  parts.forEach(function (p, i) {
+    var rt = typeof retract === 'function' ? retract(i) : retract;
+    poly(p, (typeof prog === 'function' ? prog(i) : prog) * (1 - rt), { w: 2.8, pen: rt === 0 });
+  });
+}
+function sceneKC(t, cam) {
+  if (t > 9.6) return;
+  var k = P(t, 3.4, 1.1, 'io');
+  var design = P(t, -0.35, 3.75, 'out');
+  var c = { yaw: lerp(-250, -24, design) * D2R * (1 - k), pitch: lerp(32, 14, design) * D2R * (1 - k), persp: 1 - k, D: 560, s: KC.s, ox: KC.ox, oy: KC.oy };
+  var wa = 1 - P(t, 3.95, .7, 'io');
+  if (wa > 0) {
+    KC.box.forEach(function (e, i) { line3(e, c, P(t, .05 + i * .04, .8, 'io'), { a: .3 * wa, w: 1.3, flat: true }); });
+    KC.wire.forEach(function (wv) { line3(wv.pts, c, P(t, wv.st, wv.d || .7, 'io'), { a: wa, w: wv.w }); });
+  }
+  var kg = kgAt(t);
+  var retract = function (i) { return P(t, 8.55 + i * .03, .45, 'io'); };
+  drawKCOutline(function (i) { return P(t, 3.85 + i * .07, .9, 'io'); }, retract, kg.sc, t > 8.6);
+
+  // reference numerals and the forearm in phantom
+  var na = env(t, 4.85, 8.5, .3, .3);
+  [[[80,-140],[110,-170],[142,-176],'10',[150,-170]], [[-160,58],[-184,42],[-190,16],'12',[-206,6]], [[160,58],[184,42],[190,16],'14',[180,6]]].forEach(function (n, i) {
+    var pts = bez(kcS(n[0]), kcS(n[1]), kcS(n[1]), kcS(n[2]), 16);
+    poly(pts, P(t, 4.85 + i * .07, .35) * (1 - retract(9)), { w: 1.6, col: DIM });
+    var q = kcS(n[4]); text(n[3], q[0], q[1], { size: 24, a: na * P(t, 5.0 + i * .07, .3) });
+  });
+  var fa = env(t, 5.05, 6.2, .45, .3), dy = (1 - P(t, 5.05, .6, 'out5')) * -90;
+  [-30, 30].forEach(function (x) { poly([kcS([x, -182 + dy]), kcS([x, 132 + dy])], 1, { w: 2, col: DIM, dash: [10, 8], a: fa }); });
+
+  // weight counter
+  var ca = env(t, 6.35, 8.5, .3, .25);
+  if (ca > 0) {
+    var cy = 935;
+    ctx.save(); ctx.beginPath(); ctx.rect(300, cy - 56, 480, 74); ctx.clip();
+    var sl = 1 - kg.p;
+    text(kg.prev + ' kg', 540, cy - (1 - sl) * 60, { size: 54, col: WHITE, align: 'center', a: ca * sl, ls: 2 });
+    text(kg.v + ' kg', 540, cy + sl * 60, { size: 54, col: WHITE, align: 'center', a: ca * (1 - sl), ls: 2 });
+    ctx.restore();
+  }
+
+  // the right mass lifts off to become the head in Fig. 2
+  if (t > 8.6) {
+    var tr = P(t, 8.7, .75, 'io'), m = kcMass(109, kg.sc, tr);
+    var hd = MA_HEAD0, cx = lerp(m.c[0], hd[0], tr), cyy = lerp(m.c[1], hd[1], tr), sc2 = lerp(1, 30 / m.r, tr);
+    poly(m.pts.map(function (p) { return [cx + (p[0] - m.c[0]) * sc2, cyy + (p[1] - m.c[1]) * sc2]; }), 1, { w: lerp(2.8, 4, tr) });
+    poly(m.feet, 1 - P(t, 8.6, .3), { w: 2.8 });
+  }
+}
+
+/* ================= FIG. 2 Mobility Age ================= */
+var MA = { ankle: [430, 900], L: { shank: 152, thigh: 150, torso: 168, neck: 34, head: 30, upper: 94, fore: 88 } };
+var STAND = { shank: 2.8, thigh: -2.9, torso: 2.5, neck: 6, upper: 172, fore: 178 };
+var SQUAT = { shank: 40, thigh: -100, torso: 45, neck: 40, upper: 92, fore: 90 };
+var FOLD = { shank: 2, thigh: -1, torso: 130, neck: 140, upper: 178, fore: 180 };
+var REACH = { shank: 2.8, thigh: -2.9, torso: 2, neck: 4, upper: 8, fore: 4 };
+function stepTo(p, deg, len) { return [p[0] + len * Math.sin(deg * D2R), p[1] - len * Math.cos(deg * D2R)]; }
+function fk(a) {
+  var L = MA.L, ank = MA.ankle, knee = stepTo(ank, a.shank, L.shank), hip = stepTo(knee, a.thigh, L.thigh), sh = stepTo(hip, a.torso, L.torso);
+  var elb = stepTo(sh, a.upper, L.upper);
+  return { ankle: ank, knee: knee, hip: hip, sh: sh, nk: stepTo(sh, a.neck, L.neck), head: stepTo(sh, a.neck, L.neck + L.head), elb: elb, wr: stepTo(elb, a.fore, L.fore) };
+}
+function blend(A, B, k) { var o = {}; for (var s in A) o[s] = lerp(A[s], B[s], k); return o; }
+var LUNGE = (function () {
+  var b = MA.ankle, r = function (x, y) { return [b[0] + x, b[1] + y]; };
+  return { ankle: r(0,0), knee: r(0,-152), hip: r(-150,-152), sh: r(-140,-320), nk: r(-138,-354), head: r(-137,-384), elb: r(-134,-228), wr: r(-124,-142), knee2: r(-205,-12), ankle2: r(-356,0) };
+})();
+var MA_HEAD0 = fk(STAND).head;
+var JOINTS = ['ankle', 'knee', 'hip', 'sh', 'elb', 'wr'];
+function xf(J, s, anchor) {
+  var o = {}; for (var k in J) o[k] = [anchor[0] + (J[k][0] - MA.ankle[0]) * s, anchor[1] + (J[k][1] - MA.ankle[1]) * s];
+  return o;
+}
+function bones(J) {
+  var b = [[J.ankle, J.knee], [J.knee, J.hip], [J.hip, J.sh], [J.sh, J.nk], [J.sh, J.elb], [J.elb, J.wr]];
+  if (J.knee2) b.push([J.hip, J.knee2], [J.knee2, J.ankle2]);
+  return b;
+}
+function drawSkel(J, s, prog, a, w) {
+  prog = prog == null ? 1 : prog; a = a == null ? 1 : a; w = w || 4;
+  bones(J).forEach(function (b, i) { poly(b, clamp(prog * 8 - i * .9), { w: w, a: a }); });
+  poly(circ(J.head[0], J.head[1], 30 * s, 40), prog, { w: w, a: a });
+  var keys = JOINTS.concat(J.knee2 ? ['knee2', 'ankle2'] : []);
+  keys.forEach(function (k, i) { dot(J[k][0], J[k][1], Math.max(3.2, 8 * s) * clamp(prog * 6 - i * .5), a); });
+}
+function maDepth(t) { return P(t, 10.45, 1.0, 'io') - P(t, 11.65, .8, 'io') + P(t, 12.55, .9, 'io'); }
+function maPose(t) { return fk(blend(STAND, SQUAT, maDepth(t))); }
+function ang(o, a, b) {
+  var v1 = [a[0]-o[0], a[1]-o[1]], v2 = [b[0]-o[0], b[1]-o[1]];
+  return Math.acos(clamp((v1[0]*v2[0] + v1[1]*v2[1]) / (Math.hypot(v1[0], v1[1]) * Math.hypot(v2[0], v2[1])), -1, 1)) / D2R;
+}
+var FRAMES = [[322, 452], [758, 452], [322, 782], [758, 782]];
+var FRAME_POSES = [null, fk(FOLD), fk(REACH), LUNGE];
+function fitAnchor(J, s, c) {
+  var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  for (var k in J) { x0 = Math.min(x0, J[k][0]); x1 = Math.max(x1, J[k][0]); y0 = Math.min(y0, J[k][1]); y1 = Math.max(y1, J[k][1]); }
+  y0 = Math.min(y0, J.head[1] - 30);
+  return [c[0] - ((x0 + x1) / 2 - MA.ankle[0]) * s, c[1] - ((y0 + y1) / 2 - MA.ankle[1]) * s];
+}
+var FRAME_ANCH = [fk(SQUAT), fk(FOLD), fk(REACH), LUNGE].map(function (J, i) { return fitAnchor(J, .42, [FRAMES[i][0], FRAMES[i][1] - 6]); });
+var FRAME_LBL = ['SQUAT', 'FOLD', 'REACH', 'LUNGE'];
+function sceneMA(t) {
+  if (t < 9.3 || t > 16.7) return;
+  var J = maPose(t);
+  var tf = P(t, 14.62, .55, 'io');
+  var anchor = [lerp(MA.ankle[0], FRAME_ANCH[0][0], tf), lerp(MA.ankle[1], FRAME_ANCH[0][1], tf)], s = lerp(1, .42, tf);
+  var JS = xf(J, s, anchor);
+  var outK = P(t, 15.85, .4, 'io');
+
+  poly([[160, 918], [720, 918]], P(t, 9.75, .6, 'io') * (1 - tf), { w: 1.6, col: DIM });
+  if (t < 14.62) {
+    // ghosts: chronophotography of the movement
+    if (t > 10.3 && t < 14.7) {
+      for (var g = 4; g >= 1; g--) {
+        var kt = maDepth(t - g * .075), JG = fk(blend(STAND, SQUAT, kt)), mv = Math.min(1, Math.abs(maDepth(t) - kt) * 7);
+        drawSkel(JG, 1, 1, mv * [0, .32, .22, .13, .07][g], 2.2);
       }
+    }
+    // assembly, top down
+    var ts = { sh: 9.45, elb: 9.55, wr: 9.63, hip: 9.7, knee: 9.8, ankle: 9.9 };
+    var bl = [['sh', 'nk', 9.42], ['sh', 'elb', 9.55], ['elb', 'wr', 9.63], ['hip', 'sh', 9.7], ['knee', 'hip', 9.8], ['ankle', 'knee', 9.9]];
+    bl.forEach(function (b) { poly([JS[b[0]], JS[b[1]]], P(t, b[2], .22, 'io'), { w: 4 * Math.max(s, .6) }); });
+    poly([[JS.ankle[0] - 26, JS.ankle[1] + 18], [JS.ankle[0] + 56, JS.ankle[1] + 18]], P(t, 9.95, .2), { w: 4 });
+    poly(circ(JS.head[0], JS.head[1], 30 * s, 48), t >= 9.44 ? 1 : 0, { w: 4 * Math.max(s, .6) });
+    JOINTS.forEach(function (k) {
+      var ta = ts[k], x = JS[k][0], y = JS[k][1];
+      var ch = P(t, ta, .18, 'out') * (1 - P(t, ta + .2, .3, 'io'));
+      if (ch > 0) { var L = 22 * ch; poly([[x - L, y], [x + L, y]], 1, { w: 1.6 }); poly([[x, y - L], [x, y + L]], 1, { w: 1.6 }); ring(x, y, 14 * ch, ch, 1.4); }
+      dot(x, y, 8 * Math.max(s, .5) * P(t, ta + .05, .3, 'back'));
     });
+    var labs = { sh: '5', elb: '7', wr: '9', hip: '11', knee: '13', ankle: '15' }, la = env(t, 9.6, 10.6, .3, .4);
+    JOINTS.forEach(function (k) { text(labs[k], JS[k][0] + 16, JS[k][1] - 14, { size: 18, a: la }); });
+
+    // knee angle, live
+    var knee = ang(J.knee, J.ankle, J.hip), hip = ang(J.hip, J.knee, J.sh);
+    var aa = env(t, 10.35, 14.55, .35, .25);
+    if (aa > 0 && knee < 174) {
+      var a1 = Math.atan2(J.ankle[1] - J.knee[1], J.ankle[0] - J.knee[0]), a2 = Math.atan2(J.hip[1] - J.knee[1], J.hip[0] - J.knee[0]);
+      var d = a2 - a1; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI;
+      poly(arc(J.knee[0], J.knee[1], 58, a1, a1 + d, 30), 1, { w: 2.4, a: aa });
+      var mid = a1 + d / 2;
+      text(Math.round(knee) + '°', J.knee[0] + 98 * Math.cos(mid), J.knee[1] + 98 * Math.sin(mid) + 9, { size: 26, col: WHITE, align: 'center', a: aa });
+    }
+    // read-outs
+    var ra = env(t, 10.0, 14.55, .4, .25);
+    text('KNEE', 772, 450, { size: 26, a: ra });
+    text(Math.round(knee) + '°', 768, 545, { size: 96, col: WHITE, a: ra, ls: -1 });
+    text('HIP', 772, 640, { size: 26, a: ra });
+    text(Math.round(hip) + '°', 768, 735, { size: 96, col: WHITE, a: ra, ls: -1 });
+
+    // measurement error narrowing: was 10 to 12 degrees, now 4 to 6
+    var wa = env(t, 13.55, 14.55, .3, .25);
+    if (wa > 0) {
+      var e = lerp(11, 5, P(t, 13.75, .65, 'io')) * D2R, th = Math.atan2(J.hip[1] - J.knee[1], J.hip[0] - J.knee[0]), R = 196;
+      var w1 = [J.knee[0] + R * Math.cos(th - e), J.knee[1] + R * Math.sin(th - e)], w2 = [J.knee[0] + R * Math.cos(th + e), J.knee[1] + R * Math.sin(th + e)];
+      var wedge = [J.knee].concat(arc(J.knee[0], J.knee[1], R, th - e, th + e, 16)).concat([J.knee]);
+      poly(wedge, 1, { w: 1.4, col: SOFT, a: wa, fill: 'rgba(255,255,255,.12)' });
+      text('±' + Math.round(e / D2R) + '°', J.knee[0] + (R + 30) * Math.cos(th), J.knee[1] + (R + 30) * Math.sin(th) + 8, { size: 26, col: WHITE, align: 'center', a: wa });
+    }
+  }
+
+  // four photos
+  if (t >= 14.6) {
+    FRAMES.forEach(function (f, i) {
+      var st = 14.7 + i * .15, bw = 186, bh = 142, L = 30;
+      var pg = P(t, st, .35, 'io') * (1 - P(t, 15.85 + i * .03, .35, 'io'));
+      [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (s2) {
+        var cx = f[0] + s2[0] * bw, cy = f[1] + s2[1] * bh;
+        poly([[cx, cy - s2[1] * L], [cx, cy], [cx - s2[0] * L, cy]], pg, { w: 2.2 });
+      });
+      text(FRAME_LBL[i], f[0], f[1] + bh + 38, { size: 20, align: 'center', a: pg });
+      if (i > 0) {
+        var JF = xf(FRAME_POSES[i], .42, FRAME_ANCH[i]);
+        drawSkel(JF, .42, P(t, st + .08, .5, 'io') * (1 - outK), 1, 3);
+      }
+      poly([[f[0] - 150, FRAME_ANCH[i][1] + 8], [f[0] + 150, FRAME_ANCH[i][1] + 8]], pg, { w: 1.4, col: DIM });
+    });
+    drawSkel(JS, s, 1 - outK, 1, lerp(4, 3, tf));
+  }
+}
+function maFlash(t) {
+  return Math.max(.38 * (1 - P(t, 14.62, .32, 'out')) * (t >= 14.62 ? 1 : 0),
+    [14.85, 15.0, 15.15].reduce(function (m, s) { return Math.max(m, t >= s ? .16 * (1 - P(t, s, .25, 'out')) : 0); }, 0));
+}
+
+/* ================= FIG. 3 Forge ================= */
+var RC = [540, 520], RR = 92;
+var FG = {};
+(function () {
+  var c20 = Math.cos(20 * D2R), s20 = Math.sin(20 * D2R), Hn = [0, -40, 40], u = [0, -c20, s20], n = [0, s20, c20], pv = [0, -250, 110];
+  function P3(x, v, w) { return [x + Hn[0] + v * u[0] + w * n[0] - pv[0], Hn[1] + v * u[1] + w * n[1] - pv[1], Hn[2] + v * u[2] + w * n[2] - pv[2]]; }
+  FG.P3 = P3;
+  FG.front = rrect(-150, 0, 300, 480, 30).map(function (p) { return P3(p[0], p[1], 0); });
+  FG.back = rrect(-150, 0, 300, 480, 30).map(function (p) { return P3(p[0], p[1], 36); });
+  FG.edges = [[-150, 30], [150, 30], [-150, 450], [150, 450]].map(function (q) { return [P3(q[0], q[1], 0), P3(q[0], q[1], 36)]; });
+  FG.phone = rrect(-132, 18, 264, 444, 34).map(function (p) { return P3(p[0], p[1], -14); });
+  FG.phoneEdges = [[-132, 52], [132, 52], [-132, 428], [132, 428]].map(function (q) { return [P3(q[0], q[1], -14), P3(q[0], q[1], 0)]; });
+  FG.mags = [];
+  for (var k = 0; k < 18; k++) {
+    var a = k / 18 * 2 * Math.PI - Math.PI / 2, mx = RR * Math.cos(a), mv = 260 - RR * Math.sin(a), pts = [];
+    for (var j = 0; j <= 16; j++) { var b = j / 16 * 2 * Math.PI; pts.push(P3(mx + 12 * Math.cos(b), mv - 12 * Math.sin(b), -1)); }
+    FG.mags.push(pts);
+  }
+  var bx = [-150, 150], by = [-40, 0], bz = [-150, 230], base = [];
+  [[0,0,0,1,0,0],[0,1,0,1,1,0],[0,0,1,1,0,1],[0,1,1,1,1,1],[0,0,0,0,1,0],[1,0,0,1,1,0],[0,0,1,0,1,1],[1,0,1,1,1,1],[0,0,0,0,0,1],[1,0,0,1,0,1],[0,1,0,0,1,1],[1,1,0,1,1,1]].forEach(function (e) {
+    base.push([[bx[e[0]] - pv[0], by[e[1]] - pv[1], bz[e[2]] - pv[2]], [bx[e[3]] - pv[0], by[e[4]] - pv[1], bz[e[5]] - pv[2]]]);
   });
-  document.querySelectorAll('[data-draw]').forEach(function (svg) {
-    var a = +svg.dataset.draw, d = +(svg.dataset.dur || 1), s = +(svg.dataset.stagger || 0.08);
-    svg.querySelectorAll('path, circle, rect, line, ellipse').forEach(function (n, i) {
-      n.setAttribute('pathLength', '1');
-      n.setAttribute('stroke-dasharray', '1 1');
-      tracks.push(function (t) { n.setAttribute('stroke-dashoffset', (1 - P(t, a + i * s, d, 'io')).toFixed(4)); });
+  FG.base = base;
+  var c0 = { yaw: 0, pitch: 20 * D2R, persp: 0, s: 1, ox: 0, oy: 0 }, q = pr(P3(0, 260, 0), c0);
+  FG.ox0 = RC[0] - q[0]; FG.oy0 = RC[1] - q[1];
+  FG.end = { yaw: -90 * D2R, pitch: 0, persp: 0, s: 1, ox: 560, oy: 600 };
+  var pp = function (p) { var r = pr(p, FG.end); return [r[0], r[1]]; };
+  FG.sidePlate = resample([P3(0, 480, 0), P3(0, 0, 0), P3(0, 0, 36), P3(0, 480, 36), P3(0, 480, 0)].map(pp), 120);
+  FG.sideBase = resample([[0, -40, -150], [0, 0, -150], [0, 0, 230], [0, -40, 230], [0, -40, -150]].map(function (p) { return pp([p[0] - pv[0], p[1] - pv[1], p[2] - pv[2]]); }), 120);
+})();
+function fgCam(t) {
+  var k = P(t, 18.2, 1.05, 'io');
+  return { yaw: lerp(0, -90, k) * D2R, pitch: lerp(20, 0, k) * D2R, persp: .5 * Math.sin(Math.PI * k), D: 900, s: 1, ox: lerp(FG.ox0, FG.end.ox, k), oy: lerp(FG.oy0, FG.end.oy, k) };
+}
+function magnetPos(k) { var a = k / 18 * 2 * Math.PI - Math.PI / 2; return [RC[0] + RR * Math.cos(a), RC[1] + RR * Math.sin(a)]; }
+function sceneForge(t) {
+  if (t < 15.8 || t > 20.5) return;
+  // joints from Fig. 2 fly into the magnet ring
+  if (t < 16.75) {
+    var src = [];
+    FRAMES.forEach(function (f, i) {
+      var J = i === 0 ? xf(fk(SQUAT), .42, FRAME_ANCH[0]) : xf(FRAME_POSES[i], .42, FRAME_ANCH[i]);
+      JOINTS.forEach(function (k) { src.push(J[k]); });
     });
+    src.sort(function (a, b) { return Math.atan2(a[1] - RC[1], a[0] - RC[0]) - Math.atan2(b[1] - RC[1], b[0] - RC[0]); });
+    src.forEach(function (p, i) {
+      var slot = Math.round(i * 18 / src.length) % 18, tg = magnetPos((slot + 14) % 18);
+      var k = P(t, 15.9 + i * .012, .6, 'io'), mid = [lerp(p[0], tg[0], .5) + (RC[0] - p[0]) * .25, lerp(p[1], tg[1], .5) - 60];
+      var q = [lerp(lerp(p[0], mid[0], k), lerp(mid[0], tg[0], k), k), lerp(lerp(p[1], mid[1], k), lerp(mid[1], tg[1], k), k)];
+      var extra = i % 4 === 3;
+      dot(q[0], q[1], lerp(3.4, 6, k), extra ? 1 - k : 1);
+    });
+  }
+  var k3 = P(t, 18.2, .05, 'lin'), mo = P(t, 19.62, .7, 'io');
+  if (t < 18.25) {
+    for (var m = 0; m < 18; m++) {
+      var p = magnetPos(m), g = P(t, 16.5 + m * .015, .4, 'back');
+      ring(p[0], p[1], lerp(6, 12, g), t >= 16.5 ? 1 : 0, 2.2);
+      dot(p[0], p[1], 6 * (1 - g), t >= 16.5 ? 1 : 0);
+      var hit = t > 17.88 ? 1 - P(t, 17.88 + m * .006, .35) : 0;
+      ring(p[0], p[1], 12 + 14 * (1 - hit), hit * .8, 1.6);
+    }
+    poly(rrect(390, 300, 300, 480, 30), P(t, 16.75, .6, 'io'), { w: 2.8, pen: true });
+    poly([[540, 404], [540, 636]], P(t, 16.9, .4), { w: 1.4, col: DIM, dash: [8, 6] });
+    poly([[424, 520], [656, 520]], P(t, 16.95, .4), { w: 1.4, col: DIM, dash: [8, 6] });
+    var drop = (1 - P(t, 17.35, .53, 'out5')) * -620;
+    if (t >= 17.35) poly(rrect(408, 318 + drop, 264, 444, 34), 1, { w: 2.8 });
+  } else if (mo < 1) {
+    var c = fgCam(t), fade = 1 - P(t, 19.55, .25);
+    line3(FG.front, c, 1, { w: 2.6, a: fade }); line3(FG.back, c, 1, { w: 2.2, a: fade });
+    FG.edges.forEach(function (e) { line3(e, c, 1, { w: 2.2, a: fade }); });
+    line3(FG.phone, c, 1, { w: 2.6, a: fade }); FG.phoneEdges.forEach(function (e) { line3(e, c, 1, { w: 2, a: fade }); });
+    FG.mags.forEach(function (mg) { line3(mg, c, 1, { w: 1.8, a: fade }); });
+    FG.base.forEach(function (e, i) { line3(e, c, P(t, 18.3 + i * .04, .5, 'io'), { w: 2.4, a: fade }); });
+    // the 20 degree tilt, true in side view
+    var aa = env(t, 19.15, 19.55, .3, .2);
+    if (aa > 0) {
+      var h = pr(FG.P3(0, 0, 0), c), top = pr(FG.P3(0, 480, 0), c);
+      var va = -Math.PI / 2, pa = Math.atan2(top[1] - h[1], top[0] - h[0]);
+      poly([[h[0], h[1]], [h[0], h[1] - 300]], P(t, 19.12, .3), { w: 1.6, col: DIM, dash: [9, 7] });
+      poly(arc(h[0], h[1], 170, va, pa, 20), P(t, 19.2, .3), { w: 2.2, a: aa });
+      text('20°', h[0] + 18, h[1] - 150, { size: 30, col: WHITE, a: aa });
+    }
+  }
+  // the side view of the stand becomes the profile of a vase
+  if (t >= 19.6) {
+    var vs = vaseSil(0);
+    poly(mixP(FG.sidePlate, vs, P(t, 19.62, .7, 'io')), 1, { w: 2.8 });
+    poly(mixP(FG.sideBase, vs, P(t, 19.72, .62, 'io')), 1, { w: 2.8, a: 1 - P(t, 20.25, .1) });
+  }
+}
+
+/* ================= FIG. 4 Thrown ================= */
+var VA = [[72, 330], [40, 470], [250, 640], [86, 860]], VB = [[72, 330], [112, 450], [158, 720], [86, 860]];
+function vaseCtrl(m) { return VA.map(function (p, i) { return [lerp(p[0], VB[i][0], m), lerp(p[1], VB[i][1], m)]; }); }
+function vaseProf(m) { var c = vaseCtrl(m); return bez(c[0], c[1], c[2], c[3], 44); }
+function vaseSil(m) {
+  var pr2 = vaseProf(m), right = pr2.map(function (p) { return [540 + p[0], p[1]]; }), left = pr2.slice().reverse().map(function (p) { return [540 - p[0], p[1]]; });
+  return resample(right.concat(left, [right[0]]), 120);
+}
+function thrownShape(t) { return P(t, 20.85, .5, 'io') - .55 * P(t, 21.35, .45, 'io'); }
+function sceneThrown(t) {
+  if (t < 20.3 || t > 23.7) return;
+  var m = thrownShape(t);
+  var a2 = 1 - P(t, 21.95, .3);
+  poly([[540, 300], [540, 892]], P(t, 20.4, .5, 'io') * (1 - P(t, 22.8, .2)), { w: 1.4, col: DIM, dash: [10, 7] });
+  if (a2 > 0) poly(vaseSil(m), 1, { w: 2.8, a: a2 });
+  // control points, dragged
+  var ca = env(t, 20.6, 21.85, .25, .25);
+  if (ca > 0) {
+    var c = vaseCtrl(m).map(function (p) { return [540 + p[0], p[1]]; });
+    poly([c[0], c[1]], 1, { w: 1.4, col: SOFT, dash: [6, 5], a: ca }); poly([c[3], c[2]], 1, { w: 1.4, col: SOFT, dash: [6, 5], a: ca });
+    c.forEach(function (p, i) {
+      var s = i === 0 || i === 3 ? 7 : 9;
+      poly([[p[0] - s, p[1] - s], [p[0] + s, p[1] - s], [p[0] + s, p[1] + s], [p[0] - s, p[1] + s], [p[0] - s, p[1] - s]], 1, { w: 2, a: ca, fill: i === 0 || i === 3 ? BG : 'rgba(255,255,255,1)' });
+    });
+  }
+  // revolve the profile into a solid
+  var rv = P(t, 21.9, .85, 'io'), out = P(t, 22.82, .2);
+  if (rv > 0 && out < 1) {
+    var settle = P(t, 22.55, .3, 'io');
+    var c3 = { yaw: (t - 21.9) * 1.1 * (1 - settle), pitch: 18 * D2R * P(t, 21.8, .45, 'io') * (1 - settle), persp: .6, D: 900, s: 1, ox: 540, oy: 595 };
+    var prof = vaseProf(m), sweep = rv * 360;
+    for (var k = 0; k < 24; k++) {
+      var th = k * 15;
+      if (th > sweep + .01) break;
+      line3(prof.map(function (p) { return [p[0] * Math.cos(th * D2R), p[1] - 595, p[0] * Math.sin(th * D2R)]; }), c3, 1, { w: 2, a: 1 - out, zr: 160 });
+    }
+    [0, 6, 12, 18, 24, 30, 36, 44].forEach(function (i) {
+      var p = prof[i], pts = [];
+      for (var j = 0; j <= 48; j++) { var a = j / 48 * sweep * D2R; pts.push([p[0] * Math.cos(a), p[1] - 595, p[0] * Math.sin(a)]); }
+      line3(pts, c3, 1, { w: 1.8, a: 1 - out, zr: 160 });
+    });
+  }
+  // the profile turns on its side and becomes a price line
+  if (t >= 22.8) {
+    var pf = resample(vaseProf(m).map(function (p) { return [540 + p[0], p[1]]; }), 80), k2 = P(t, 22.95, .65, 'io');
+    var flat = resample([[150, 700], [930, 700]], 80);
+    var pts = pf.map(function (p, i) { var r = rotP(p, [540, 595], -Math.PI / 2 * k2); return [lerp(r[0], flat[i][0], k2), lerp(r[1], flat[i][1], k2)]; });
+    if (t < 23.65) poly(pts, 1, { w: 2.8 });
+  }
+}
+
+/* ================= FIG. 5 Duty Diligence ================= */
+var DD = { x: [250, 440, 630, 820], lv: [700, 700, 560, 610, 480], lbl: ['06:10', '18:10', '06:10', '18:10'], t0: 24.0, dur: 1.9 };
+DD.tc = DD.x.map(function (x) { return DD.t0 + DD.dur * (x - 150) / 780; });
+function ddLevels(t) { var L = [DD.lv[0]]; for (var i = 0; i < 4; i++) L.push(lerp(L[i], DD.lv[i + 1], P(t, DD.tc[i], .38, 'back'))); return L; }
+function ddLine(t) {
+  var L = ddLevels(t), pts = [[150, L[0]]];
+  for (var i = 0; i < 4; i++) { pts.push([DD.x[i], L[i]], [DD.x[i], L[i + 1]]); }
+  pts.push([930, L[4]]);
+  return pts;
+}
+function sceneDD(t) {
+  if (t < 23.2 || t > 26.7) return;
+  var fade = 1 - P(t, 25.95, .35);
+  poly([[150, 380], [150, 860], [930, 860]], P(t, 23.25, .55, 'io'), { w: 2.6, pen: true });
+  text('%', 136, 370, { size: 22, align: 'right', a: P(t, 23.6, .3) * fade });
+  DD.x.forEach(function (x, i) {
+    poly([[x, 860], [x, 874]], P(t, 23.55 + i * .05, .2), { w: 2, a: fade });
+    text(DD.lbl[i], x, 906, { size: 20, align: 'center', a: P(t, 23.65 + i * .05, .3) * fade });
   });
-
-  // ---------- frame zone ticks (A-F, 1-4), like a drawing sheet ----------
-  (function () {
-    var z = document.getElementById('zones');
-    var cols = 4, rows = 5;
-    for (var i = 1; i < cols; i++) {
-      var x = 36 + i * (1008 / cols);
-      el('path', { d: 'M' + x + ' 36 L' + x + ' 52 M' + x + ' 1298 L' + x + ' 1314', class: 'ld' }, z);
-    }
-    for (var j = 1; j < rows; j++) {
-      var y = 36 + j * (1278 / rows);
-      el('path', { d: 'M36 ' + y + ' L52 ' + y + ' M1028 ' + y + ' L1044 ' + y, class: 'ld' }, z);
-    }
-    for (var c = 0; c < cols; c++) {
-      var tx = el('text', { x: 36 + (c + .5) * (1008 / cols) - 5, y: 28, 'font-size': 16 }, z); tx.textContent = c + 1;
-    }
-    'ABCDE'.split('').forEach(function (L, r) {
-      var ty = el('text', { x: 12, y: 36 + (r + .5) * (1278 / rows) + 6, 'font-size': 16 }, z); ty.textContent = L;
-    });
-  })();
-
-  // ---------- camera ----------
-  var sheet = document.getElementById('sheet');
-  var moves = [[3.35, 0, 1350], [10.6, 1350, 2700], [17.95, 2700, 4050], [24.95, 4050, 5400]];
-  tracks.push(function (t) {
-    var y = 0;
-    moves.forEach(function (m) { if (t >= m[0]) y = m[1] + (m[2] - m[1]) * P(t, m[0], 1.0, 'io'); });
-    sheet.style.transform = 'translate3d(0,' + (-y).toFixed(2) + 'px,0)';
+  if (t >= 23.6) poly(ddLine(t), 1, { w: 2.8, a: fade });
+  var sx = lerp(150, 930, P(t, DD.t0, DD.dur, 'lin')), sa = env(t, DD.t0, 25.9, .15, .1);
+  poly([[sx, 380], [sx, 860]], 1, { w: 2, dash: [8, 6], a: sa });
+  dot(sx, 380, 5, sa);
+  var L = ddLevels(t);
+  DD.x.forEach(function (x, i) {
+    if (t < DD.tc[i]) return;
+    var p = P(t, DD.tc[i], .55);
+    ring(x, L[i + 1], 6 + 40 * p, (1 - p) * fade, 2);
+    dot(x, L[i + 1], 6, fade);
   });
+  // the axes close into a pitch
+  if (t >= 25.95) {
+    poly([[930, 860], [930, 380], [150, 380]], P(t, 26.0, .5, 'io'), { w: 2.6, pen: true });
+    poly([[lerp(930, 540, P(t, 26.0, .5, 'io')), 380], [lerp(930, 540, P(t, 26.0, .5, 'io')), 860]], 1, { w: 2.4, a: P(t, 25.95, .2) });
+  }
+}
 
-  // ---------- KettleCross weights: circle area proportional to mass ----------
-  (function () {
-    var host = document.getElementById('weights');
-    var svg = el('svg', { width: 900, height: 80, viewBox: '0 0 900 80' }, host);
-    var kgs = [8, 12, 16, 20, 24], x = 0;
-    kgs.forEach(function (kg, i) {
-      var r = 12 * Math.sqrt(kg / 8);
-      var cx = x + r;
-      var c = el('circle', { cx: cx, cy: 40, r: r, class: 'st', 'stroke-width': 2.4 }, svg);
-      var tx = el('text', { x: cx + r + 12, y: 49, 'font-size': 26, fill: '#fff' }, svg);
-      tx.textContent = kg + (i === kgs.length - 1 ? ' kg' : '');
-      x = cx + r + 12 + (i === kgs.length - 1 ? 0 : 58) + 34;
-      var a = 8.0 + i * 0.16;
-      tracks.push(function (t) {
-        var p = P(t, a, .5, 'back');
-        c.setAttribute('transform', 'translate(' + cx + ' 40) scale(' + p.toFixed(3) + ') translate(' + (-cx) + ' -40)');
-        tx.style.opacity = P(t, a + .1, .4).toFixed(3);
-      });
+/* ================= FIG. 6 Pitch Persona and FIG. 7 Vantage share a plane ================= */
+function planeState(t) {
+  var k = P(t, 28.65, .9, 'io');
+  return { tau: 62 * D2R * k, cy: lerp(620, 520, k), persp: k, s: 1, k: k };
+}
+function pp3(u, v, h, st) {
+  var ct = Math.cos(st.tau), stt = Math.sin(st.tau), y = v * ct - h * stt, depth = -v * stt - h * ct, f = 1 / (1 + st.persp * depth / 900);
+  return [540 + st.s * u * f, st.cy + st.s * y * f, f];
+}
+function pl(pts, st, prog, o) { poly(pts.map(function (p) { var q = pp3(p[0], p[1], p[2] || 0, st); return [q[0], q[1]]; }), prog, o); }
+function segN(a, b, n) { var o = []; for (var i = 0; i <= n; i++) o.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); return o; }
+var PPA = [[-210, 20], [-70, -150], [60, 140], [180, -100], [280, 70]], PPD = [[-120, -20], [20, -60], [150, 20], [260, -170]];
+var BALL = { t0: 30.0, t1: 30.6, t2: 30.82, a: [-90, -400, 30], b: [118, 430, 0], c: [134, 500, 40] };
+function ballAt(t) {
+  if (t <= BALL.t1) { var s = clamp((t - BALL.t0) / (BALL.t1 - BALL.t0)); return [lerp(BALL.a[0], BALL.b[0], s), lerp(BALL.a[1], BALL.b[1], s), 30 * (1 - s) + 4 * 170 * s * (1 - s)]; }
+  var s2 = clamp((t - BALL.t1) / (BALL.t2 - BALL.t1)); return [lerp(BALL.b[0], BALL.c[0], s2), lerp(BALL.b[1], BALL.c[1], s2), 4 * 60 * s2 * (1 - s2) + 40 * s2 * s2];
+}
+function drawCourt(st, t, prog) {
+  var k = st.k, rw = lerp(390, 200, k), rh = lerp(240, 460, k), hv = lerp(240, 248, k);
+  pl(segN([-rw, -rh], [rw, -rh], 8).concat(segN([rw, -rh], [rw, rh], 8).slice(1), segN([rw, rh], [-rw, rh], 8).slice(1), segN([-rw, rh], [-rw, -rh], 8).slice(1)), st, prog == null ? 1 : prog, { w: 2.6 });
+  pl(segN([0, -hv], [0, hv], 8), st, prog == null ? 1 : prog, { w: 2.4 });
+  var la = P(t, 29.15, .5, 'io');
+  if (la > 0) {
+    [[[-150, -460], [-150, 460]], [[150, -460], [150, 460]], [[-150, -248], [150, -248]], [[-150, 248], [150, 248]], [[0, 460], [0, 444]], [[0, -460], [0, -444]]].forEach(function (s, i) {
+      pl(segN(s[0], s[1], 10), st, P(t, 29.15 + i * .05, .45, 'io'), { w: 2.2 });
     });
-  })();
-
-  // ---------- Mobility Age skeleton ----------
-  (function () {
-    var svg = document.getElementById('skel');
-    var D = Math.PI / 180;
-    var ankle = [410, 922], heel = [384, 938], toe = [466, 938];
-    var L = { shank: 152, thigh: 150, torso: 168, neck: 34, head: 30, upper: 94, fore: 88 };
-    // absolute segment directions, degrees from vertical, positive towards +x
-    var STAND = { shank: 2.8, thigh: -2.9, torso: 2.5, neck: 6, upper: 172, fore: 178 };
-    var SQUAT = { shank: 40, thigh: -100, torso: 45, neck: 40, upper: 92, fore: 90 };
-    function step(p, deg, len) { return [p[0] + len * Math.sin(deg * D), p[1] - len * Math.cos(deg * D)]; }
-    function pose(k) {
-      var a = {};
-      for (var s in STAND) a[s] = STAND[s] + (SQUAT[s] - STAND[s]) * k;
-      var knee = step(ankle, a.shank, L.shank);
-      var hip = step(knee, a.thigh, L.thigh);
-      var sh = step(hip, a.torso, L.torso);
-      var neckEnd = step(sh, a.neck, L.neck);
-      var head = step(sh, a.neck, L.neck + L.head);
-      var elb = step(sh, a.upper, L.upper);
-      var wr = step(elb, a.fore, L.fore);
-      return { ankle: ankle, knee: knee, hip: hip, sh: sh, neckEnd: neckEnd, head: head, elb: elb, wr: wr };
-    }
-    // squat depth over time (0 standing, 1 deep squat)
-    function depth(t) {
-      var k = 0;
-      k += P(t, 12.55, 1.35, 'io');
-      k -= P(t, 14.55, 1.1, 'io');
-      k += P(t, 15.95, 1.3, 'io');
-      return k;
-    }
-    function ang(o, a, b) {
-      var v1 = [a[0] - o[0], a[1] - o[1]], v2 = [b[0] - o[0], b[1] - o[1]];
-      var c = (v1[0] * v2[0] + v1[1] * v2[1]) / (Math.hypot(v1[0], v1[1]) * Math.hypot(v2[0], v2[1]));
-      return Math.acos(Math.max(-1, Math.min(1, c))) / D;
-    }
-    var ground = el('path', { d: 'M150 938 L700 938', class: 'ld', pathLength: 1, 'stroke-dasharray': '1 1' }, svg);
-    var foot = el('path', { d: 'M' + heel + ' L' + toe, class: 'st', 'stroke-width': 5 }, svg);
-
-    function figure(op, w) {
-      var g = el('g', { opacity: op }, svg);
-      return {
-        g: g,
-        bones: el('path', { class: 'st', 'stroke-width': w }, g),
-        head: el('circle', { class: 'st', 'stroke-width': w, r: 30 }, g),
-        dots: ['ankle', 'knee', 'hip', 'sh', 'elb', 'wr'].map(function () { return el('circle', { r: w > 3 ? 9 : 5, fill: '#fff' }, g); })
-      };
-    }
-    function place(f, p) {
-      f.bones.setAttribute('d', 'M' + p.ankle + ' L' + p.knee + ' L' + p.hip + ' L' + p.sh + ' L' + p.neckEnd + ' M' + p.sh + ' L' + p.elb + ' L' + p.wr);
-      f.head.setAttribute('cx', p.head[0].toFixed(1)); f.head.setAttribute('cy', p.head[1].toFixed(1));
-      ['ankle', 'knee', 'hip', 'sh', 'elb', 'wr'].forEach(function (k, i) {
-        f.dots[i].setAttribute('cx', p[k][0].toFixed(1)); f.dots[i].setAttribute('cy', p[k][1].toFixed(1));
-      });
-    }
-    var ghosts = [0.22, 0.14, 0.08, 0.04].map(function (o) { return figure(o, 2.5); });
-    var arc = el('path', { fill: 'none', stroke: '#fff', 'stroke-width': 2.4 }, svg);
-    var arcTxt = el('text', { 'font-size': 26, fill: '#fff' }, svg);
-    var main = figure(1, 5);
-    var kneeVal = document.getElementById('kneeVal'), hipVal = document.getElementById('hipVal');
-
-    tracks.push(function (t) {
-      var show = P(t, 11.6, .6);
-      var k = depth(t);
-      var p = pose(k);
-      place(main, p);
-      main.g.setAttribute('opacity', show.toFixed(3));
-      foot.setAttribute('opacity', show.toFixed(3));
-      ground.setAttribute('stroke-dashoffset', (1 - P(t, 11.4, .9, 'io')).toFixed(4));
-      ghosts.forEach(function (g, i) {
-        var kt = depth(t - (i + 1) * 0.11);
-        place(g, pose(kt));
-        g.g.setAttribute('opacity', (show * Math.min(1, Math.abs(k - kt) * 6) * [0.3, 0.2, 0.12, 0.06][i]).toFixed(3));
-      });
-      var knee = ang(p.knee, p.ankle, p.hip), hip = ang(p.hip, p.knee, p.sh);
-      kneeVal.textContent = Math.round(knee) + '°';
-      hipVal.textContent = Math.round(hip) + '°';
-      // knee arc between shank and thigh
-      var r = 58;
-      var a1 = Math.atan2(p.ankle[1] - p.knee[1], p.ankle[0] - p.knee[0]);
-      var a2 = Math.atan2(p.hip[1] - p.knee[1], p.hip[0] - p.knee[0]);
-      var s = [p.knee[0] + r * Math.cos(a1), p.knee[1] + r * Math.sin(a1)];
-      var e = [p.knee[0] + r * Math.cos(a2), p.knee[1] + r * Math.sin(a2)];
-      var cross = Math.cos(a1) * Math.sin(a2) - Math.sin(a1) * Math.cos(a2);
-      arc.setAttribute('d', 'M' + s[0].toFixed(1) + ' ' + s[1].toFixed(1) + ' A' + r + ' ' + r + ' 0 0 ' + (cross > 0 ? 1 : 0) + ' ' + e[0].toFixed(1) + ' ' + e[1].toFixed(1));
-      var mid = Math.atan2(Math.sin(a1) + Math.sin(a2), Math.cos(a1) + Math.cos(a2));
-      arcTxt.setAttribute('x', (p.knee[0] + 96 * Math.cos(mid) - 26).toFixed(1));
-      arcTxt.setAttribute('y', (p.knee[1] + 96 * Math.sin(mid) + 9).toFixed(1));
-      arcTxt.textContent = Math.round(knee) + '°';
-      var vis = P(t, 12.2, .5) * (knee < 172 ? 1 : 0.0);
-      arc.setAttribute('opacity', vis.toFixed(3)); arcTxt.setAttribute('opacity', vis.toFixed(3));
+    pl(segN([-222, 0], [222, 0], 10), st, P(t, 29.3, .45, 'io'), { w: 3.4 });
+  }
+}
+function scenePitch(t) {
+  if (t < 26.5 || t > 31.95) return;
+  var st = planeState(t), fadeP = 1 - P(t, 28.6, .35);
+  drawCourt(st, t);
+  if (fadeP > 0) {
+    pl(circ(0, 0, 60, 48), st, P(t, 26.5, .45, 'io'), { w: 2.2, a: fadeP });
+    pl(arc(-390, 0, 110, -Math.PI / 2, Math.PI / 2, 30), st, P(t, 26.6, .45, 'io'), { w: 2.2, a: fadeP });
+    pl(arc(390, 0, 110, Math.PI / 2, 1.5 * Math.PI, 30), st, P(t, 26.65, .45, 'io'), { w: 2.2, a: fadeP });
+    var dec = P(t, 27.75, .3);
+    [1, 2, 3].forEach(function (j, i) {
+      var a = PPA[0], b = PPA[j], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), e = [b[0] - dx / L * 20, b[1] - dy / L * 20];
+      var chosen = j === 2, pg = P(t, 27.25 + i * .08, .35, 'io'), al = fadeP * (chosen ? 1 : 1 - .75 * dec);
+      var A = pp3(a[0], a[1], 0, st), B = pp3(e[0], e[1], 0, st);
+      poly([[A[0], A[1]], [B[0], B[1]]], pg, { w: chosen ? lerp(2, 3.2, dec) : 2, dash: chosen && dec > .5 ? null : [9, 7], a: al });
+      arrowHead([A[0], A[1]], [B[0], B[1]], pg >= 1 ? 1 : 0, { w: 2.2, a: al });
     });
-  })();
-
-  // ---------- Other work ----------
-  (function () {
-    var host = document.getElementById('log');
-    var items = [
-      ['Duty Diligence', 'US import duty and margin for Shopify stores', 'steps'],
-      ['Forge', 'MagSafe stand with an 18-magnet ring', 'ring'],
-      ['Thrown', 'Design 3D-printable vases and planters', 'vase'],
-      ['Pitch Persona', '100 match scenarios, hockey and football', 'pitch'],
-      ['Vantage', 'Tennis line calls from one phone (prototype)', 'court']
-    ];
-    var y0 = 410, gap = 170;
-    var spine = document.getElementById('spine');
-    tracks.push(function (t) { spine.setAttribute('stroke-dashoffset', (1 - P(t, 19.0, 4.0, 'io')).toFixed(4)); });
-    items.forEach(function (it, i) {
-      var a = 19.3 + i * 0.8, y = y0 + i * gap;
-      var row = document.createElement('div');
-      row.className = 'abs';
-      row.style.cssText = 'left:0;top:' + y + 'px;width:1080px;height:120px';
-      row.innerHTML =
-        '<div style="position:absolute;left:196px;top:-2px;font-size:46px;font-weight:700;font-stretch:110%;letter-spacing:-.015em">' + it[0] + '</div>' +
-        '<div style="position:absolute;left:196px;top:58px;font-size:32px;color:var(--ink-2);font-weight:500">' + it[1] + '</div>';
-      host.appendChild(row);
-      var svg = el('svg', { width: 1080, height: 140, viewBox: '0 0 1080 140', style: 'position:absolute;left:0;top:' + (y - 10) + 'px' }, host);
-      var node = el('circle', { cx: 140, cy: 32, r: 11, fill: '#0F2A82', stroke: '#fff', 'stroke-width': 3 }, svg);
-      var ic = el('g', { transform: 'translate(950 34)' }, svg);
-      icon(it[2], ic);
-      ic.querySelectorAll('*').forEach(function (n, j) {
-        if (n.tagName === 'text') return;
-        n.setAttribute('pathLength', '1'); n.setAttribute('stroke-dasharray', '1 1');
-        tracks.push(function (t) { n.setAttribute('stroke-dashoffset', (1 - P(t, a + .1 + j * .03, .6, 'io')).toFixed(4)); });
-      });
-      tracks.push(function (t) {
-        var p = P(t, a, .55, 'out5');
-        row.style.opacity = p.toFixed(3);
-        row.style.transform = 'translateX(' + ((1 - p) * 40).toFixed(2) + 'px)';
-        var q = P(t, a - .05, .4, 'back');
-        node.setAttribute('r', (11 * q).toFixed(2));
-      });
+    PPA.forEach(function (p, i) {
+      var q = p.slice(); if (i === 2) q[0] += 40 * P(t, 28.0, .5, 'io');
+      var s = pp3(q[0], q[1], 0, st); dot(s[0], s[1], 12 * P(t, 26.85 + i * .05, .4, 'back') * s[2], fadeP);
     });
-    function icon(kind, g) {
-      var o = { class: 'st', 'stroke-width': 2.4 };
-      function add(tag, at) { var m = {}; for (var k in o) m[k] = o[k]; for (var k2 in at) m[k2] = at[k2]; return el(tag, m, g); }
-      if (kind === 'ring') {
-        for (var k = 0; k < 18; k++) { var an = k / 18 * Math.PI * 2; add('circle', { cx: (34 * Math.cos(an)).toFixed(1), cy: (34 * Math.sin(an)).toFixed(1), r: 5 }); }
-      } else if (kind === 'phone') {
-        add('rect', { x: -22, y: -40, width: 44, height: 80, rx: 8 }); add('circle', { cx: 0, cy: -28, r: 3 }); add('path', { d: 'M-8 30 L8 30' });
-      } else if (kind === 'steps') {
-        add('path', { d: 'M-40 34 L-40 -36 M-40 34 L42 34' }); add('path', { d: 'M-40 18 L-18 18 L-18 4 L6 4 L6 -20 L28 -20 L28 -10 L42 -10' });
-      } else if (kind === 'pitch') {
-        add('rect', { x: -44, y: -30, width: 88, height: 60 }); add('path', { d: 'M0 -30 L0 30' }); add('circle', { cx: 0, cy: 0, r: 11 });
-      } else if (kind === 'vase') {
-        add('path', { d: 'M-14 -34 C-24 -18 -30 -4 -28 10 C-26 26 -16 30 -18 40 M14 -34 C24 -18 30 -4 28 10 C26 26 16 30 18 40' }); add('ellipse', { cx: 0, cy: -34, rx: 14, ry: 4 });
-      } else if (kind === 'court') {
-        add('path', { d: 'M-40 34 L40 34 L26 -34 L-26 -34 Z M-30 34 L-19 -34 M30 34 L19 -34 M-34 10 L34 10 M0 10 L0 34' });
-      } else if (kind === 'clip') {
-        add('rect', { x: -28, y: -36, width: 56, height: 72, rx: 4 }); add('path', { d: 'M-14 -12 L14 -12 M-14 4 L14 4 M-14 20 L6 20' });
-      } else if (kind === 'bell') {
-        add('path', { d: 'M-24 18 C-24 -6 -20 -26 0 -26 C20 -26 24 -6 24 18 L30 26 L-30 26 Z' }); add('path', { d: 'M-8 34 A8 8 0 0 0 8 34' });
+    PPD.forEach(function (p, i) { var s = pp3(p[0], p[1], 0, st); ring(s[0], s[1], 12 * P(t, 26.95 + i * .05, .4, 'back') * s[2], fadeP, 2.4); });
+    var bk = P(t, 27.85, .45, 'out'), bp = [lerp(PPA[0][0] + 16, PPA[2][0] + 40 * P(t, 28.0, .5, 'io') - 16, bk), lerp(PPA[0][1] + 10, PPA[2][1] + 6, bk)];
+    for (var tr = 6; tr >= 1; tr--) {
+      var bk2 = P(t - tr * .025, 27.85, .45, 'out'), q2 = [lerp(PPA[0][0] + 16, PPA[2][0] - 16, bk2), lerp(PPA[0][1] + 10, PPA[2][1] + 6, bk2)], s2 = pp3(q2[0], q2[1], 0, st);
+      dot(s2[0], s2[1], 6, fadeP * .1 * (7 - tr) * (bk > 0 && bk < 1 ? 1 : 0));
+    }
+    var bs = pp3(bp[0], bp[1], 0, st); dot(bs[0], bs[1], 7, fadeP * P(t, 27.1, .3)); ring(bs[0], bs[1], 7, fadeP * P(t, 27.1, .3), 1.6);
+  }
+  // Vantage: one phone behind the baseline, a ball and a line call
+  var va = P(t, 29.55, .4);
+  if (va > 0) {
+    var ph = [540, 972];
+    poly(rrect(ph[0] - 14, ph[1] - 24, 28, 48, 6), P(t, 29.55, .4), { w: 2.2 });
+    var fa = env(t, 29.7, 30.5, .3, .4);
+    [[-200, -460], [200, -460]].forEach(function (c) { var q = pp3(c[0], c[1], 0, st); poly([[ph[0], ph[1] - 24], [q[0], q[1]]], P(t, 29.7, .4, 'io'), { w: 1.4, col: DIM, dash: [8, 7], a: fa }); });
+    if (t >= BALL.t0) {
+      for (var g = 9; g >= 0; g--) {
+        var tt = t - g * .022; if (tt < BALL.t0) continue;
+        var b = ballAt(Math.min(tt, BALL.t2)), s3 = pp3(b[0], b[1], b[2], st), sh = pp3(b[0], b[1], 0, st);
+        var gone = 1 - P(t, BALL.t1 + .04, .16);
+        if (g === 0) { dot(sh[0], sh[1], 7 * sh[2], .25 * gone); dot(s3[0], s3[1], 9 * s3[2], gone); }
+        else dot(s3[0], s3[1], 8 * s3[2] * (1 - g / 11), (1 - g / 10) * .35 * gone);
       }
     }
-  })();
+    if (t >= BALL.t1) {
+      var mk = P(t, BALL.t1, .25, 'back');
+      pl(circ(BALL.b[0], BALL.b[1], 11 * mk, 32).map(function (p) { return [BALL.b[0] + (p[0] - BALL.b[0]) * 1.4, p[1]]; }), st, 1, { w: 2.2, fill: 'rgba(255,255,255,.18)' });
+      var rp = P(t, BALL.t1, .6); pl(circ(BALL.b[0], BALL.b[1], 11 + 38 * rp, 40), st, 1, { w: 1.6, a: 1 - rp });
+      var sb = pp3(BALL.b[0], BALL.b[1], 0, st), ia = P(t, 30.82, .25, 'back');
+      if (t >= 30.82) {
+        ctx.save(); ctx.translate(sb[0] + 34, sb[1] - 30); ctx.scale(ia, ia);
+        text('IN', 0, 0, { sans: true, weight: 800, size: 46, col: WHITE, ls: -1 });
+        ctx.restore();
+      }
+    }
+  }
+}
 
-  // ---------- driver ----------
-  function seek(t) { for (var i = 0; i < tracks.length; i++) tracks[i](t); }
-  window.seek = seek;
-  var render = /render=1/.test(location.search);
-  if (render) { document.body.classList.add('render'); seek(0); return; }
-  var t0 = null, hold = 1.2;
-  function loop(now) {
+/* ================= contact sheet: all seven figures ================= */
+var CELLS = [[72, 150], [564, 150], [72, 440], [564, 440], [72, 730], [564, 730], [72, 1020], [564, 1020]];
+var CW = 444, CH = 250;
+var CELL_LBL = ['FIG. 1  KETTLECROSS', 'FIG. 2  MOBILITY AGE', 'FIG. 3  FORGE', 'FIG. 4  THROWN', 'FIG. 5  DUTY DILIGENCE', 'FIG. 6  PITCH PERSONA', 'FIG. 7  VANTAGE', 'FIG. 8'];
+var MINI = [
+  { c: [540, 590], s: .4 }, { c: [520, 760], s: .5 }, { c: [540, 540], s: .38 }, { c: [540, 595], s: .36 },
+  { c: [540, 620], s: .4 }, { c: [540, 620], s: .4 }, { c: [540, 650], s: .34 }
+];
+function cellMap(i) { var m = MINI[i], cx = CELLS[i][0] + CW / 2, cy = CELLS[i][1] + CH / 2 + 14; return { cx: cx, cy: cy, s: m.s, c: m.c }; }
+function withCell(i, k, fn) {
+  var m = cellMap(i), s = lerp(1, m.s, k);
+  ctx.save(); ctx.translate(lerp(m.c[0], m.cx, k), lerp(m.c[1], m.cy, k)); ctx.scale(s, s); ctx.translate(-m.c[0], -m.c[1]);
+  var old = LW; LW = .8 / s * k + (1 - k); fn(); LW = old; ctx.restore();
+}
+function mini(i, pg) {
+  if (i === 0) drawKCOutline(pg, 0, 1, false);
+  if (i === 1) { drawSkel(fk(SQUAT), 1, pg, 1, 4); poly([[300, 918], [700, 918]], pg, { w: 2, col: DIM }); }
+  if (i === 2) {
+    poly(rrect(390, 300, 300, 480, 30), pg, { w: 2.8 });
+    for (var m = 0; m < 18; m++) { var p = magnetPos(m); poly(circ(p[0], p[1], 12, 16), pg, { w: 2.2 }); }
+  }
+  if (i === 3) { poly(vaseSil(.45), pg, { w: 2.8 }); [0.25, 0.55, 0.8].forEach(function (f) { var pr3 = vaseProf(.45)[Math.round(f * 44)]; poly(circ(540, pr3[1], 1, 48).map(function (p) { return [540 + (p[0] - 540) * pr3[0], pr3[1] + (p[1] - pr3[1]) * pr3[0] * .22]; }), pg, { w: 1.8, col: SOFT }); }); }
+  if (i === 4) { poly([[150, 380], [150, 860], [930, 860]], pg, { w: 2.6 }); poly(ddLine(99), pg, { w: 2.8 }); }
+  if (i === 5) {
+    var st = { tau: 0, cy: 620, persp: 0, s: 1, k: 0 };
+    drawCourt(st, 0, pg); pl(circ(0, 0, 60, 40), st, pg, { w: 2.2 });
+    PPA.forEach(function (p) { var q = pp3(p[0], p[1], 0, st); dot(q[0], q[1], 12 * pg); });
+    PPD.forEach(function (p) { var q = pp3(p[0], p[1], 0, st); ring(q[0], q[1], 12 * pg, 1, 2.4); });
+  }
+}
+function sceneSheet(t) {
+  if (t < 31.9) return;
+  // Fig. 7 shrinks into its cell while the others draw in
+  withCell(6, P(t, 31.9, .65, 'io'), function () { scenePitch(Math.min(t, 31.9)); });
+  for (var i = 0; i < 8; i++) {
+    var x = CELLS[i][0], y = CELLS[i][1], pg = P(t, 31.95 + i * .06, .55, 'io');
+    var dash = i === 7 ? [10, 8] : null;
+    poly([[x, y], [x + CW, y], [x + CW, y + CH], [x, y + CH], [x, y]], pg, { w: i === 7 ? 2 : 1.4, col: i === 7 ? WHITE : DIM, dash: dash });
+    text(CELL_LBL[i], x + 16, y + 30, { size: 16, a: P(t, 32.2 + i * .06, .3), col: i === 7 ? WHITE : DIM });
+    if (i < 6) withCell(i, 1, function () { mini(i, P(t, 32.05 + i * .08, .6, 'io')); });
+  }
+}
+
+/* ================= end card ================= */
+function sceneEnd(t) {
+  if (t < 35.3) return;
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+  var y = 862, x0 = 96, x1 = 96 + 600, pg = P(t, 35.6, .6, 'io');
+  poly([[x0, y - 14], [x0, y + 14]], pg, { w: 1.6, col: DIM }); poly([[x1, y - 14], [x1, y + 14]], pg, { w: 1.6, col: DIM });
+  poly([[x0, y], [x1, y]], pg, { w: 1.6, col: DIM });
+  arrowHead([x1, y], [x0, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM }); arrowHead([x0, y], [x1, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM });
+  ctx.restore();
+}
+
+/* ================= kinetic type (DOM) ================= */
+var TXT = document.getElementById('txt'), texts = [];
+function addText(o) {
+  var el = document.createElement('div');
+  el.className = 't ' + (o.cls || 'big');
+  el.style.left = o.x + 'px'; el.style.top = o.y + 'px'; el.style.fontSize = o.size + 'px';
+  if (o.col) el.style.color = o.col;
+  if (o.style) el.style.cssText += o.style;
+  var units = [];
+  o.t.split('\n').forEach(function (line) {
+    var ln = document.createElement('span'); ln.className = 'ln';
+    var parts = o.mode === 'word' ? line.split(/(?<= )/) : Array.from(line);
+    parts.forEach(function (ch) { var u = document.createElement('span'); u.className = 'u'; u.textContent = ch; ln.appendChild(u); units.push(u); });
+    if (o.caret) { var c = document.createElement('span'); c.className = 'caret'; ln.appendChild(c); o.caretEl = c; }
+    el.appendChild(ln);
+  });
+  TXT.appendChild(el);
+  o.units = units; o.el = el;
+  texts.push(o);
+}
+function updateText(t) {
+  texts.forEach(function (o) {
+    var n = o.units.length, vis = t >= o.tin - .05 && (o.tout == null || t <= o.tout + 1.2);
+    o.el.style.visibility = vis ? 'visible' : 'hidden';
+    if (!vis) return;
+    o.units.forEach(function (u, i) {
+      if (o.mode === 'type') {
+        var on = t >= o.tin + i * .032, off = o.tout != null && t >= o.tout + (n - i) * .008;
+        u.style.display = on && !off ? 'inline-block' : 'none'; return;
+      }
+      var st = o.mode === 'word' ? .045 : .022;
+      var pin = P(t, o.tin + i * st, .7, 'out5'), pout = o.tout == null ? 0 : P(t, o.tout + i * st * .5, .42, 'in');
+      var y = (1 - pin) * 108 - pout * 108, r = (1 - pin) * (o.mode === 'word' ? 0 : 8);
+      u.style.transform = 'translateY(' + y.toFixed(2) + '%) rotate(' + r.toFixed(2) + 'deg)';
+    });
+    if (o.caretEl) {
+      var typed = t >= o.tin + n * .032;
+      o.caretEl.style.opacity = !typed ? (t >= o.tin ? 1 : 0) : (Math.floor((t - o.tin) * 2.4) % 2 === 0 ? 1 : 0);
+    }
+  });
+}
+var NAME_Y = 1000, SUB_Y = 1122, DET_Y = 1240;
+[
+  { t: 'I design products,', x: 96, y: 126, size: 74, tin: .12, tout: 3.42 },
+  { t: 'get them protected', x: 96, y: 126, size: 74, tin: 3.55, tout: 6.08 },
+  { t: 'and get them made.', x: 96, y: 126, size: 74, tin: 6.2, tout: 8.5 },
+  { t: 'KettleCross', x: 96, y: NAME_Y, size: 104, tin: 4.5, tout: 8.5 },
+  { t: 'Your forearm sits in the gap, so your\nwrist stays straight overhead', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 4.8, tout: 6.12 },
+  { t: 'Licensed to AbMat and sold in the US\nand Canada as the U-Bell', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 6.28, tout: 8.5 },
+  { t: 'US design patent D1,001,923', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', tin: 5.3, tout: 8.4 },
+
+  { t: 'Mobility Age', x: 96, y: NAME_Y, size: 104, tin: 9.7, tout: 15.8 },
+  { t: 'Four phone photos give you\na mobility age', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 10.05, tout: 15.8 },
+  { t: 'Pose error 4 to 6° · was 10 to 12°', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', tin: 13.7, tout: 14.55 },
+  { t: 'mobilityage.co.uk · also for PTs and physios', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 14.7, tout: 15.75 },
+
+  { t: 'Forge', x: 96, y: NAME_Y, size: 104, tin: 16.8, tout: 19.5 },
+  { t: 'A MagSafe stand with 18 N52 magnets\nin a 57 mm ring', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 17.05, tout: 19.5 },
+  { t: 'Face tilted at 20°', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', tin: 18.85, tout: 19.45 },
+
+  { t: 'Thrown', x: 96, y: NAME_Y, size: 104, tin: 20.35, tout: 22.8 },
+  { t: 'Design 3D-printable vases and\nplanters in the browser', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 20.6, tout: 22.8 },
+  { t: 'thrown.netlify.app', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 21.3, tout: 22.75 },
+
+  { t: 'Duty Diligence', x: 96, y: NAME_Y, size: 104, tin: 23.6, tout: 25.88 },
+  { t: 'US import duty and margin for\nShopify stores', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 23.85, tout: 25.88 },
+  { t: 'Checks the US tariff schedule twice a day', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 24.2, tout: 25.85 },
+
+  { t: 'Pitch Persona', x: 96, y: NAME_Y, size: 104, tin: 26.45, tout: 28.58 },
+  { t: '100 match scenarios for young hockey\nand football players', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 26.7, tout: 28.58 },
+  { t: 'pitchpersona.netlify.app', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 27.05, tout: 28.55 },
+
+  { t: 'Vantage', x: 96, y: NAME_Y, size: 104, tin: 29.25, tout: 31.7 },
+  { t: 'Line calls and match stats from one\nphone behind the baseline', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 29.5, tout: 31.7 },
+  { t: 'Prototype', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 29.9, tout: 31.65 },
+
+  { t: 'Get in\ntouch', x: 90, y: 330, size: 210, tin: 34.55 },
+  { t: 'joshume@hotmail.com', x: 96, y: 770, size: 52, cls: 'mono', mode: 'type', col: '#fff', style: 'text-transform:none;letter-spacing:.02em', caret: true, tin: 35.1 },
+  { t: 'Joshua Hume · product developer and inventor', x: 96, y: 912, size: 32, cls: 'sub', mode: 'word', tin: 35.7 }
+].forEach(addText);
+
+/* header strip */
+var HDR = [[0, 'Fig. 1 · KettleCross'], [9.4, 'Fig. 2 · Mobility Age'], [16.6, 'Fig. 3 · Forge'], [20.25, 'Fig. 4 · Thrown'], [23.4, 'Fig. 5 · Duty Diligence'], [26.35, 'Fig. 6 · Pitch Persona'], [29.15, 'Fig. 7 · Vantage'], [31.95, 'Figs. 1 to 7'], [33.75, 'Fig. 8']];
+var hdrL = document.createElement('div');
+hdrL.className = 't mono'; hdrL.style.cssText = 'left:72px;top:64px;font-size:22px;color:#fff'; hdrL.textContent = 'Joshua Hume';
+TXT.appendChild(hdrL);
+var hdrEls = HDR.map(function (h) {
+  var w = document.createElement('div'); w.className = 't mono'; w.style.cssText = 'right:72px;top:64px;font-size:22px;overflow:hidden;height:30px';
+  var s = document.createElement('span'); s.style.display = 'block'; s.textContent = h[1]; w.appendChild(s); TXT.appendChild(w);
+  return s;
+});
+function updateHeader(t) {
+  HDR.forEach(function (h, i) {
+    var next = HDR[i + 1] ? HDR[i + 1][0] : 1e9, pin = i === 0 ? 1 : P(t, h[0], .45, 'out5'), pout = P(t, next - .05, .35, 'in');
+    hdrEls[i].style.transform = 'translateY(' + ((1 - pin) * 110 - pout * 110).toFixed(1) + '%)';
+    hdrEls[i].parentNode.style.visibility = t >= h[0] - .1 && t <= next + .5 ? 'visible' : 'hidden';
+  });
+}
+
+/* ================= static sheet frame ================= */
+(function () {
+  var f = document.getElementById('fr').getContext('2d');
+  f.strokeStyle = 'rgba(255,255,255,.85)'; f.lineWidth = 2; f.strokeRect(36, 36, 1008, 1278);
+  f.strokeStyle = 'rgba(147,168,236,.9)'; f.lineWidth = 1.2;
+  f.fillStyle = '#93A8EC'; f.font = '500 16px "IBM Plex Mono"';
+  for (var i = 1; i < 4; i++) { var x = 36 + i * 252; f.beginPath(); f.moveTo(x, 36); f.lineTo(x, 52); f.moveTo(x, 1298); f.lineTo(x, 1314); f.stroke(); }
+  for (var j = 1; j < 5; j++) { var y = 36 + j * 255.6; f.beginPath(); f.moveTo(36, y); f.lineTo(52, y); f.moveTo(1028, y); f.lineTo(1044, y); f.stroke(); }
+  window.__drawFrameLabels = function () {
+    f.clearRect(0, 0, W, 34); f.clearRect(0, 0, 34, H);
+    for (var c = 0; c < 4; c++) f.fillText(String(c + 1), 36 + (c + .5) * 252 - 5, 28);
+    'ABCDE'.split('').forEach(function (L, r) { f.fillText(L, 12, 36 + (r + .5) * 255.6 + 6); });
+  };
+})();
+
+/* ================= frame driver ================= */
+var flash = document.getElementById('flash');
+function seek(t) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+  var cam = camera(t);
+  grid({ x: cam.x + t * 5, y: cam.y + t * 1.5, z: cam.z });
+  poly([[72, 104], [1008, 104]], 1, { w: 1, col: DIM, a: .6 });
+  ctx.save();
+  ctx.beginPath(); ctx.rect(37, 106, 1006, 1207); ctx.clip();
+  ctx.setTransform(cam.z, 0, 0, cam.z, 540 - cam.x * cam.z, 675 - cam.y * cam.z);
+  sceneKC(t); sceneMA(t); sceneForge(t); sceneThrown(t); sceneDD(t);
+  if (t < 31.9) scenePitch(t);
+  sceneSheet(t);
+  ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(37, 37, 1006, 1276); ctx.clip(); sceneEnd(t); ctx.restore();
+  updateText(t); updateHeader(t);
+  flash.style.opacity = maFlash(t).toFixed(3);
+}
+window.seek = seek;
+
+// the bounce point drives the Vantage zoom
+(function () { var st = { tau: 62 * D2R, cy: 520, persp: 1, s: 1 }, b = pp3(BALL.b[0], BALL.b[1], 0, st); CAM_MOVES[4][2] = b[0]; CAM_MOVES[4][3] = b[1] - 10; })();
+// zoom into Fig. 8: centre of that cell
+CAM_MOVES[6][2] = CELLS[7][0] + CW / 2; CAM_MOVES[6][3] = CELLS[7][1] + CH / 2;
+
+var render = /render=1/.test(location.search);
+document.fonts.ready.then(function () {
+  window.__drawFrameLabels();
+  if (render) { document.body.classList.add('render'); seek(0); window.__ready = true; return; }
+  var t0 = null, hold = 1.5;
+  (function loop(now) {
     if (t0 === null) t0 = now;
     var t = ((now - t0) / 1000) % (DURATION + hold);
     seek(Math.min(t, DURATION));
     requestAnimationFrame(loop);
-  }
-  document.fonts.ready.then(function () { requestAnimationFrame(loop); });
+  })(performance.now());
+});
 })();
 </script>
 </body>
