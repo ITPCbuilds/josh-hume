@@ -179,9 +179,8 @@ var CAM_MOVES = [
   [3.4, 1.2, 540, 675, 1, 'io'],
   [8.5, .65, 610, 560, 1.14, 'io'],
   [9.15, .95, 540, 675, 1, 'io'],
-  [30.66, .5, 0, 0, 1.85, 'io'],   // x, y filled in from the bounce point
-  [31.3, .55, 540, 675, 1, 'io'],
-  [33.45, 1.25, 786, 1150, 25, 'io5']
+  [30.3, 4.0, 540, 600, 1.04, 'io'],
+  [34.3, .9, 540, 675, 1, 'io']
 ];
 function camera(t) {
   var x = 540, y = 675, z = 1;
@@ -190,8 +189,6 @@ function camera(t) {
     if (p <= 0) continue;
     x = lerp(x, m[2], p); y = lerp(y, m[3], p); z = z * Math.pow(m[4] / z, p);
   }
-  var sh = t > 17.9 ? Math.exp(-(t - 17.9) * 13) * 7 : 0;
-  x += Math.sin(t * 95) * sh; y += Math.cos(t * 81) * sh;
   return { x: x, y: y, z: z };
 }
 function gridAlpha(ss) { return ss < 8 ? 0 : ss < 30 ? .055 * (ss - 8) / 22 : ss < 150 ? .055 + .065 * (ss - 30) / 120 : .12; }
@@ -441,19 +438,19 @@ function sceneMA(t) {
   if (t >= 14.6) {
     FRAMES.forEach(function (f, i) {
       var st = 14.7 + i * .15, bw = 186, bh = 142, L = 30;
-      var pg = P(t, st, .35, 'io') * (1 - P(t, 15.85 + i * .03, .35, 'io'));
+      var pg = P(t, st, .35, 'io'), fa = 1 - P(t, 15.85 + i * .03, .3, 'io');
       [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (s2) {
         var cx = f[0] + s2[0] * bw, cy = f[1] + s2[1] * bh;
-        poly([[cx, cy - s2[1] * L], [cx, cy], [cx - s2[0] * L, cy]], pg, { w: 2.2 });
+        poly([[cx, cy - s2[1] * L], [cx, cy], [cx - s2[0] * L, cy]], pg, { w: 2.2, a: fa });
       });
-      text(FRAME_LBL[i], f[0], f[1] + bh + 38, { size: 20, align: 'center', a: pg });
+      text(FRAME_LBL[i], f[0], f[1] + bh + 38, { size: 20, align: 'center', a: pg * fa });
       if (i > 0) {
         var JF = xf(FRAME_POSES[i], .42, FRAME_ANCH[i]);
-        drawSkel(JF, .42, P(t, st + .08, .5, 'io') * (1 - outK), 1, 3);
+        drawSkel(JF, .42, P(t, st + .08, .5, 'io'), fa, 3);
       }
-      poly([[f[0] - 150, FRAME_ANCH[i][1] + 8], [f[0] + 150, FRAME_ANCH[i][1] + 8]], pg, { w: 1.4, col: DIM });
+      poly([[f[0] - 150, FRAME_ANCH[i][1] + 8], [f[0] + 150, FRAME_ANCH[i][1] + 8]], pg, { w: 1.4, col: DIM, a: fa });
     });
-    drawSkel(JS, s, 1 - outK, 1, lerp(4, 3, tf));
+    drawSkel(JS, s, 1, 1 - outK, lerp(4, 3, tf));
   }
 }
 function maFlash(t) {
@@ -461,8 +458,7 @@ function maFlash(t) {
     [14.85, 15.0, 15.15].reduce(function (m, s) { return Math.max(m, t >= s ? .16 * (1 - P(t, s, .25, 'out')) : 0); }, 0));
 }
 
-/* ================= FIG. 3 Forge ================= */
-var RC = [540, 520], RR = 92;
+/* ================= Forge model, shown on the bench ================= */
 var FG = {};
 (function () {
   var c20 = Math.cos(20 * D2R), s20 = Math.sin(20 * D2R), Hn = [0, -40, 40], u = [0, -c20, s20], n = [0, s20, c20], pv = [0, -250, 110];
@@ -475,8 +471,8 @@ var FG = {};
   FG.phoneEdges = [[-132, 52], [132, 52], [-132, 428], [132, 428]].map(function (q) { return [P3(q[0], q[1], -14), P3(q[0], q[1], 0)]; });
   FG.mags = [];
   for (var k = 0; k < 18; k++) {
-    var a = k / 18 * 2 * Math.PI - Math.PI / 2, mx = RR * Math.cos(a), mv = 260 - RR * Math.sin(a), pts = [];
-    for (var j = 0; j <= 16; j++) { var b = j / 16 * 2 * Math.PI; pts.push(P3(mx + 12 * Math.cos(b), mv - 12 * Math.sin(b), -1)); }
+    var a = k / 18 * 2 * Math.PI - Math.PI / 2, mx = 92 * Math.cos(a), mv = 260 - 92 * Math.sin(a), pts = [];
+    for (var j = 0; j <= 16; j++) { var b = j / 16 * 2 * Math.PI; pts.push(P3(mx + 12 * Math.cos(b), mv - 12 * Math.sin(b), -15)); }
     FG.mags.push(pts);
   }
   var bx = [-150, 150], by = [-40, 0], bz = [-150, 230], base = [];
@@ -484,303 +480,280 @@ var FG = {};
     base.push([[bx[e[0]] - pv[0], by[e[1]] - pv[1], bz[e[2]] - pv[2]], [bx[e[3]] - pv[0], by[e[4]] - pv[1], bz[e[5]] - pv[2]]]);
   });
   FG.base = base;
-  var c0 = { yaw: 0, pitch: 20 * D2R, persp: 0, s: 1, ox: 0, oy: 0 }, q = pr(P3(0, 260, 0), c0);
-  FG.ox0 = RC[0] - q[0]; FG.oy0 = RC[1] - q[1];
-  FG.end = { yaw: -90 * D2R, pitch: 0, persp: 0, s: 1, ox: 560, oy: 600 };
-  var pp = function (p) { var r = pr(p, FG.end); return [r[0], r[1]]; };
-  FG.sidePlate = resample([P3(0, 480, 0), P3(0, 0, 0), P3(0, 0, 36), P3(0, 480, 36), P3(0, 480, 0)].map(pp), 120);
-  FG.sideBase = resample([[0, -40, -150], [0, 0, -150], [0, 0, 230], [0, -40, 230], [0, -40, -150]].map(function (p) { return pp([p[0] - pv[0], p[1] - pv[1], p[2] - pv[2]]); }), 120);
 })();
-function fgCam(t) {
-  var k = P(t, 18.2, 1.05, 'io');
-  return { yaw: lerp(0, -90, k) * D2R, pitch: lerp(20, 0, k) * D2R, persp: .5 * Math.sin(Math.PI * k), D: 900, s: 1, ox: lerp(FG.ox0, FG.end.ox, k), oy: lerp(FG.oy0, FG.end.oy, k) };
-}
-function magnetPos(k) { var a = k / 18 * 2 * Math.PI - Math.PI / 2; return [RC[0] + RR * Math.cos(a), RC[1] + RR * Math.sin(a)]; }
-function sceneForge(t) {
-  if (t < 15.8 || t > 20.5) return;
-  // joints from Fig. 2 fly into the magnet ring
-  if (t < 16.75) {
-    var src = [];
-    FRAMES.forEach(function (f, i) {
-      var J = i === 0 ? xf(fk(SQUAT), .42, FRAME_ANCH[0]) : xf(FRAME_POSES[i], .42, FRAME_ANCH[i]);
-      JOINTS.forEach(function (k) { src.push(J[k]); });
-    });
-    src.sort(function (a, b) { return Math.atan2(a[1] - RC[1], a[0] - RC[0]) - Math.atan2(b[1] - RC[1], b[0] - RC[0]); });
-    src.forEach(function (p, i) {
-      var slot = Math.round(i * 18 / src.length) % 18, tg = magnetPos((slot + 14) % 18);
-      var k = P(t, 15.9 + i * .012, .6, 'io'), mid = [lerp(p[0], tg[0], .5) + (RC[0] - p[0]) * .25, lerp(p[1], tg[1], .5) - 60];
-      var q = [lerp(lerp(p[0], mid[0], k), lerp(mid[0], tg[0], k), k), lerp(lerp(p[1], mid[1], k), lerp(mid[1], tg[1], k), k)];
-      var extra = i % 4 === 3;
-      dot(q[0], q[1], lerp(3.4, 6, k), extra ? 1 - k : 1);
-    });
-  }
-  var k3 = P(t, 18.2, .05, 'lin'), mo = P(t, 19.62, .7, 'io');
-  if (t < 18.25) {
-    for (var m = 0; m < 18; m++) {
-      var p = magnetPos(m), g = P(t, 16.5 + m * .015, .4, 'back');
-      ring(p[0], p[1], lerp(6, 12, g), t >= 16.5 ? 1 : 0, 2.2);
-      dot(p[0], p[1], 6 * (1 - g), t >= 16.5 ? 1 : 0);
-      var hit = t > 17.88 ? 1 - P(t, 17.88 + m * .006, .35) : 0;
-      ring(p[0], p[1], 12 + 14 * (1 - hit), hit * .8, 1.6);
-    }
-    poly(rrect(390, 300, 300, 480, 30), P(t, 16.75, .6, 'io'), { w: 2.8, pen: true });
-    poly([[540, 404], [540, 636]], P(t, 16.9, .4), { w: 1.4, col: DIM, dash: [8, 6] });
-    poly([[424, 520], [656, 520]], P(t, 16.95, .4), { w: 1.4, col: DIM, dash: [8, 6] });
-    var drop = (1 - P(t, 17.35, .53, 'out5')) * -620;
-    if (t >= 17.35) poly(rrect(408, 318 + drop, 264, 444, 34), 1, { w: 2.8 });
-  } else if (mo < 1) {
-    var c = fgCam(t), fade = 1 - P(t, 19.55, .25);
-    line3(FG.front, c, 1, { w: 2.6, a: fade }); line3(FG.back, c, 1, { w: 2.2, a: fade });
-    FG.edges.forEach(function (e) { line3(e, c, 1, { w: 2.2, a: fade }); });
-    line3(FG.phone, c, 1, { w: 2.6, a: fade }); FG.phoneEdges.forEach(function (e) { line3(e, c, 1, { w: 2, a: fade }); });
-    FG.mags.forEach(function (mg) { line3(mg, c, 1, { w: 1.8, a: fade }); });
-    FG.base.forEach(function (e, i) { line3(e, c, P(t, 18.3 + i * .04, .5, 'io'), { w: 2.4, a: fade }); });
-    // the 20 degree tilt, true in side view
-    var aa = env(t, 19.15, 19.55, .3, .2);
-    if (aa > 0) {
-      var h = pr(FG.P3(0, 0, 0), c), top = pr(FG.P3(0, 480, 0), c);
-      var va = -Math.PI / 2, pa = Math.atan2(top[1] - h[1], top[0] - h[0]);
-      poly([[h[0], h[1]], [h[0], h[1] - 300]], P(t, 19.12, .3), { w: 1.6, col: DIM, dash: [9, 7] });
-      poly(arc(h[0], h[1], 170, va, pa, 20), P(t, 19.2, .3), { w: 2.2, a: aa });
-      text('20°', h[0] + 18, h[1] - 150, { size: 30, col: WHITE, a: aa });
-    }
-  }
-  // the side view of the stand becomes the profile of a vase
-  if (t >= 19.6) {
-    var vs = vaseSil(0);
-    poly(mixP(FG.sidePlate, vs, P(t, 19.62, .7, 'io')), 1, { w: 2.8 });
-    poly(mixP(FG.sideBase, vs, P(t, 19.72, .62, 'io')), 1, { w: 2.8, a: 1 - P(t, 20.25, .1) });
-  }
-}
 
-/* ================= FIG. 4 Thrown ================= */
-var VA = [[72, 330], [40, 470], [250, 640], [86, 860]], VB = [[72, 330], [112, 450], [158, 720], [86, 860]];
-function vaseCtrl(m) { return VA.map(function (p, i) { return [lerp(p[0], VB[i][0], m), lerp(p[1], VB[i][1], m)]; }); }
-function vaseProf(m) { var c = vaseCtrl(m); return bez(c[0], c[1], c[2], c[3], 44); }
-function vaseSil(m) {
-  var pr2 = vaseProf(m), right = pr2.map(function (p) { return [540 + p[0], p[1]]; }), left = pr2.slice().reverse().map(function (p) { return [540 - p[0], p[1]]; });
-  return resample(right.concat(left, [right[0]]), 120);
-}
-function thrownShape(t) { return P(t, 20.85, .5, 'io') - .55 * P(t, 21.35, .45, 'io'); }
-function sceneThrown(t) {
-  if (t < 20.3 || t > 23.7) return;
-  var m = thrownShape(t);
-  var a2 = 1 - P(t, 21.95, .3);
-  poly([[540, 300], [540, 892]], P(t, 20.4, .5, 'io') * (1 - P(t, 22.8, .2)), { w: 1.4, col: DIM, dash: [10, 7] });
-  if (a2 > 0) poly(vaseSil(m), 1, { w: 2.8, a: a2 });
-  // control points, dragged
-  var ca = env(t, 20.6, 21.85, .25, .25);
-  if (ca > 0) {
-    var c = vaseCtrl(m).map(function (p) { return [540 + p[0], p[1]]; });
-    poly([c[0], c[1]], 1, { w: 1.4, col: SOFT, dash: [6, 5], a: ca }); poly([c[3], c[2]], 1, { w: 1.4, col: SOFT, dash: [6, 5], a: ca });
-    c.forEach(function (p, i) {
-      var s = i === 0 || i === 3 ? 7 : 9;
-      poly([[p[0] - s, p[1] - s], [p[0] + s, p[1] - s], [p[0] + s, p[1] + s], [p[0] - s, p[1] + s], [p[0] - s, p[1] - s]], 1, { w: 2, a: ca, fill: i === 0 || i === 3 ? BG : 'rgba(255,255,255,1)' });
-    });
-  }
-  // revolve the profile into a solid
-  var rv = P(t, 21.9, .85, 'io'), out = P(t, 22.82, .2);
-  if (rv > 0 && out < 1) {
-    var settle = P(t, 22.55, .3, 'io');
-    var c3 = { yaw: (t - 21.9) * 1.1 * (1 - settle), pitch: 18 * D2R * P(t, 21.8, .45, 'io') * (1 - settle), persp: .6, D: 900, s: 1, ox: 540, oy: 595 };
-    var prof = vaseProf(m), sweep = rv * 360;
-    for (var k = 0; k < 24; k++) {
-      var th = k * 15;
-      if (th > sweep + .01) break;
-      line3(prof.map(function (p) { return [p[0] * Math.cos(th * D2R), p[1] - 595, p[0] * Math.sin(th * D2R)]; }), c3, 1, { w: 2, a: 1 - out, zr: 160 });
-    }
-    [0, 6, 12, 18, 24, 30, 36, 44].forEach(function (i) {
-      var p = prof[i], pts = [];
-      for (var j = 0; j <= 48; j++) { var a = j / 48 * sweep * D2R; pts.push([p[0] * Math.cos(a), p[1] - 595, p[0] * Math.sin(a)]); }
-      line3(pts, c3, 1, { w: 1.8, a: 1 - out, zr: 160 });
-    });
-  }
-  // the profile turns on its side and becomes a price line
-  if (t >= 22.8) {
-    var pf = resample(vaseProf(m).map(function (p) { return [540 + p[0], p[1]]; }), 80), k2 = P(t, 22.95, .65, 'io');
-    var flat = resample([[150, 700], [930, 700]], 80);
-    var pts = pf.map(function (p, i) { var r = rotP(p, [540, 595], -Math.PI / 2 * k2); return [lerp(r[0], flat[i][0], k2), lerp(r[1], flat[i][1], k2)]; });
-    if (t < 23.65) poly(pts, 1, { w: 2.8 });
-  }
-}
-
-/* ================= FIG. 5 Duty Diligence ================= */
-var DD = { x: [250, 440, 630, 820], lv: [700, 700, 560, 610, 480], lbl: ['06:10', '18:10', '06:10', '18:10'], t0: 24.0, dur: 1.9 };
+/* ================= FIG. 3 Duty Diligence ================= */
+var DD = { x: [250, 440, 630, 820], lv: [700, 700, 560, 610, 480], lbl: ['06:10', '18:10', '06:10', '18:10'], t0: 17.0, dur: 1.9 };
 DD.tc = DD.x.map(function (x) { return DD.t0 + DD.dur * (x - 150) / 780; });
 function ddLevels(t) { var L = [DD.lv[0]]; for (var i = 0; i < 4; i++) L.push(lerp(L[i], DD.lv[i + 1], P(t, DD.tc[i], .38, 'back'))); return L; }
 function ddLine(t) {
   var L = ddLevels(t), pts = [[150, L[0]]];
-  for (var i = 0; i < 4; i++) { pts.push([DD.x[i], L[i]], [DD.x[i], L[i + 1]]); }
+  for (var i = 0; i < 4; i++) pts.push([DD.x[i], L[i]], [DD.x[i], L[i + 1]]);
   pts.push([930, L[4]]);
   return pts;
 }
 function sceneDD(t) {
-  if (t < 23.2 || t > 26.7) return;
-  var fade = 1 - P(t, 25.95, .35);
-  poly([[150, 380], [150, 860], [930, 860]], P(t, 23.25, .55, 'io'), { w: 2.6, pen: true });
-  text('%', 136, 370, { size: 22, align: 'right', a: P(t, 23.6, .3) * fade });
+  if (t < 15.85 || t > 20.4) return;
+  var out = P(t, 19.8, .4, 'io');
+  // each of the four photos collapses into one check on the chart
+  if (t < 16.7) {
+    FRAMES.forEach(function (f, i) {
+      var J = i === 0 ? xf(fk(SQUAT), .42, FRAME_ANCH[0]) : xf(FRAME_POSES[i], .42, FRAME_ANCH[i]);
+      JOINTS.forEach(function (k, j) {
+        var p = J[k], tg = [DD.x[i], DD.lv[0]], kk = P(t, 15.9 + j * .03 + i * .05, .55, 'io');
+        dot(lerp(p[0], tg[0], kk), lerp(p[1], tg[1], kk) - 70 * Math.sin(Math.PI * kk), lerp(3.4, 6, kk), kk < 1 ? 1 : 0);
+      });
+    });
+  }
+  poly([[150, 860], [150, 380]], P(t, 16.15, .45, 'io') * (1 - out), { w: 2.6, pen: out === 0 });
+  if (t < 19.85) poly([[150, 860], [930, 860]], P(t, 16.2, .5, 'io'), { w: 2.6, pen: true });
+  text('%', 136, 370, { size: 22, align: 'right', a: P(t, 16.5, .3) * (1 - out) });
   DD.x.forEach(function (x, i) {
-    poly([[x, 860], [x, 874]], P(t, 23.55 + i * .05, .2), { w: 2, a: fade });
-    text(DD.lbl[i], x, 906, { size: 20, align: 'center', a: P(t, 23.65 + i * .05, .3) * fade });
+    poly([[x, 860], [x, 874]], P(t, 16.45 + i * .05, .2) * (1 - out), { w: 2 });
+    text(DD.lbl[i], x, 906, { size: 20, align: 'center', a: P(t, 16.55 + i * .05, .3) * (1 - out) });
   });
-  if (t >= 23.6) poly(ddLine(t), 1, { w: 2.8, a: fade });
-  var sx = lerp(150, 930, P(t, DD.t0, DD.dur, 'lin')), sa = env(t, DD.t0, 25.9, .15, .1);
+  poly(ddLine(t), P(t, 16.45, .55, 'io') * (1 - out), { w: 2.8, pen: out === 0 });
+  var sx = lerp(150, 930, P(t, DD.t0, DD.dur, 'lin')), sa = env(t, DD.t0, 18.95, .15, .1);
   poly([[sx, 380], [sx, 860]], 1, { w: 2, dash: [8, 6], a: sa });
   dot(sx, 380, 5, sa);
   var L = ddLevels(t);
   DD.x.forEach(function (x, i) {
+    if (t >= 16.5) dot(x, L[i + 1], 6, 1 - out);
     if (t < DD.tc[i]) return;
     var p = P(t, DD.tc[i], .55);
-    ring(x, L[i + 1], 6 + 40 * p, (1 - p) * fade, 2);
-    dot(x, L[i + 1], 6, fade);
+    ring(x, L[i + 1], 6 + 40 * p, (1 - p) * (1 - out), 2);
   });
-  // the axes close into a pitch
-  if (t >= 25.95) {
-    poly([[930, 860], [930, 380], [150, 380]], P(t, 26.0, .5, 'io'), { w: 2.6, pen: true });
-    poly([[lerp(930, 540, P(t, 26.0, .5, 'io')), 380], [lerp(930, 540, P(t, 26.0, .5, 'io')), 860]], 1, { w: 2.4, a: P(t, 25.95, .2) });
-  }
 }
 
-/* ================= FIG. 6 Pitch Persona and FIG. 7 Vantage share a plane ================= */
-function planeState(t) {
-  var k = P(t, 28.65, .9, 'io');
-  return { tau: 62 * D2R * k, cy: lerp(620, 520, k), persp: k, s: 1, k: k };
-}
-function pp3(u, v, h, st) {
-  var ct = Math.cos(st.tau), stt = Math.sin(st.tau), y = v * ct - h * stt, depth = -v * stt - h * ct, f = 1 / (1 + st.persp * depth / 900);
-  return [540 + st.s * u * f, st.cy + st.s * y * f, f];
-}
-function pl(pts, st, prog, o) { poly(pts.map(function (p) { var q = pp3(p[0], p[1], p[2] || 0, st); return [q[0], q[1]]; }), prog, o); }
-function segN(a, b, n) { var o = []; for (var i = 0; i <= n; i++) o.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); return o; }
-var PPA = [[-210, 20], [-70, -150], [60, 140], [180, -100], [280, 70]], PPD = [[-120, -20], [20, -60], [150, 20], [260, -170]];
-var BALL = { t0: 30.0, t1: 30.6, t2: 30.82, a: [-90, -400, 30], b: [118, 430, 0], c: [134, 500, 40] };
-function ballAt(t) {
-  if (t <= BALL.t1) { var s = clamp((t - BALL.t0) / (BALL.t1 - BALL.t0)); return [lerp(BALL.a[0], BALL.b[0], s), lerp(BALL.a[1], BALL.b[1], s), 30 * (1 - s) + 4 * 170 * s * (1 - s)]; }
-  var s2 = clamp((t - BALL.t1) / (BALL.t2 - BALL.t1)); return [lerp(BALL.b[0], BALL.c[0], s2), lerp(BALL.b[1], BALL.c[1], s2), 4 * 60 * s2 * (1 - s2) + 40 * s2 * s2];
-}
-function drawCourt(st, t, prog) {
-  var k = st.k, rw = lerp(390, 200, k), rh = lerp(240, 460, k), hv = lerp(240, 248, k);
-  pl(segN([-rw, -rh], [rw, -rh], 8).concat(segN([rw, -rh], [rw, rh], 8).slice(1), segN([rw, rh], [-rw, rh], 8).slice(1), segN([-rw, rh], [-rw, -rh], 8).slice(1)), st, prog == null ? 1 : prog, { w: 2.6 });
-  pl(segN([0, -hv], [0, hv], 8), st, prog == null ? 1 : prog, { w: 2.4 });
-  var la = P(t, 29.15, .5, 'io');
-  if (la > 0) {
-    [[[-150, -460], [-150, 460]], [[150, -460], [150, 460]], [[-150, -248], [150, -248]], [[-150, 248], [150, 248]], [[0, 460], [0, 444]], [[0, -460], [0, -444]]].forEach(function (s, i) {
-      pl(segN(s[0], s[1], 10), st, P(t, 29.15 + i * .05, .45, 'io'), { w: 2.2 });
-    });
-    pl(segN([-222, 0], [222, 0], 10), st, P(t, 29.3, .45, 'io'), { w: 3.4 });
-  }
-}
-function scenePitch(t) {
-  if (t < 26.5 || t > 31.95) return;
-  var st = planeState(t), fadeP = 1 - P(t, 28.6, .35);
-  drawCourt(st, t);
-  if (fadeP > 0) {
-    pl(circ(0, 0, 60, 48), st, P(t, 26.5, .45, 'io'), { w: 2.2, a: fadeP });
-    pl(arc(-390, 0, 110, -Math.PI / 2, Math.PI / 2, 30), st, P(t, 26.6, .45, 'io'), { w: 2.2, a: fadeP });
-    pl(arc(390, 0, 110, Math.PI / 2, 1.5 * Math.PI, 30), st, P(t, 26.65, .45, 'io'), { w: 2.2, a: fadeP });
-    var dec = P(t, 27.75, .3);
-    [1, 2, 3].forEach(function (j, i) {
-      var a = PPA[0], b = PPA[j], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), e = [b[0] - dx / L * 20, b[1] - dy / L * 20];
-      var chosen = j === 2, pg = P(t, 27.25 + i * .08, .35, 'io'), al = fadeP * (chosen ? 1 : 1 - .75 * dec);
-      var A = pp3(a[0], a[1], 0, st), B = pp3(e[0], e[1], 0, st);
-      poly([[A[0], A[1]], [B[0], B[1]]], pg, { w: chosen ? lerp(2, 3.2, dec) : 2, dash: chosen && dec > .5 ? null : [9, 7], a: al });
-      arrowHead([A[0], A[1]], [B[0], B[1]], pg >= 1 ? 1 : 0, { w: 2.2, a: al });
-    });
-    PPA.forEach(function (p, i) {
-      var q = p.slice(); if (i === 2) q[0] += 40 * P(t, 28.0, .5, 'io');
-      var s = pp3(q[0], q[1], 0, st); dot(s[0], s[1], 12 * P(t, 26.85 + i * .05, .4, 'back') * s[2], fadeP);
-    });
-    PPD.forEach(function (p, i) { var s = pp3(p[0], p[1], 0, st); ring(s[0], s[1], 12 * P(t, 26.95 + i * .05, .4, 'back') * s[2], fadeP, 2.4); });
-    var bk = P(t, 27.85, .45, 'out'), bp = [lerp(PPA[0][0] + 16, PPA[2][0] + 40 * P(t, 28.0, .5, 'io') - 16, bk), lerp(PPA[0][1] + 10, PPA[2][1] + 6, bk)];
-    for (var tr = 6; tr >= 1; tr--) {
-      var bk2 = P(t - tr * .025, 27.85, .45, 'out'), q2 = [lerp(PPA[0][0] + 16, PPA[2][0] - 16, bk2), lerp(PPA[0][1] + 10, PPA[2][1] + 6, bk2)], s2 = pp3(q2[0], q2[1], 0, st);
-      dot(s2[0], s2[1], 6, fadeP * .1 * (7 - tr) * (bk > 0 && bk < 1 ? 1 : 0));
-    }
-    var bs = pp3(bp[0], bp[1], 0, st); dot(bs[0], bs[1], 7, fadeP * P(t, 27.1, .3)); ring(bs[0], bs[1], 7, fadeP * P(t, 27.1, .3), 1.6);
-  }
-  // Vantage: one phone behind the baseline, a ball and a line call
-  var va = P(t, 29.55, .4);
-  if (va > 0) {
-    var ph = [540, 972];
-    poly(rrect(ph[0] - 14, ph[1] - 24, 28, 48, 6), P(t, 29.55, .4), { w: 2.2 });
-    var fa = env(t, 29.7, 30.5, .3, .4);
-    [[-200, -460], [200, -460]].forEach(function (c) { var q = pp3(c[0], c[1], 0, st); poly([[ph[0], ph[1] - 24], [q[0], q[1]]], P(t, 29.7, .4, 'io'), { w: 1.4, col: DIM, dash: [8, 7], a: fa }); });
-    if (t >= BALL.t0) {
-      for (var g = 9; g >= 0; g--) {
-        var tt = t - g * .022; if (tt < BALL.t0) continue;
-        var b = ballAt(Math.min(tt, BALL.t2)), s3 = pp3(b[0], b[1], b[2], st), sh = pp3(b[0], b[1], 0, st);
-        var gone = 1 - P(t, BALL.t1 + .04, .16);
-        if (g === 0) { dot(sh[0], sh[1], 7 * sh[2], .25 * gone); dot(s3[0], s3[1], 9 * s3[2], gone); }
-        else dot(s3[0], s3[1], 8 * s3[2] * (1 - g / 11), (1 - g / 10) * .35 * gone);
-      }
-    }
-    if (t >= BALL.t1) {
-      var mk = P(t, BALL.t1, .25, 'back');
-      pl(circ(BALL.b[0], BALL.b[1], 11 * mk, 32).map(function (p) { return [BALL.b[0] + (p[0] - BALL.b[0]) * 1.4, p[1]]; }), st, 1, { w: 2.2, fill: 'rgba(255,255,255,.18)' });
-      var rp = P(t, BALL.t1, .6); pl(circ(BALL.b[0], BALL.b[1], 11 + 38 * rp, 40), st, 1, { w: 1.6, a: 1 - rp });
-      var sb = pp3(BALL.b[0], BALL.b[1], 0, st), ia = P(t, 30.82, .25, 'back');
-      if (t >= 30.82) {
-        ctx.save(); ctx.translate(sb[0] + 34, sb[1] - 30); ctx.scale(ia, ia);
-        text('IN', 0, 0, { sans: true, weight: 800, size: 46, col: WHITE, ls: -1 });
-        ctx.restore();
-      }
-    }
-  }
+/* the chart's x axis becomes the bench divider, then the consultancy track */
+function divider(t) {
+  if (t < 19.85 || t > 25.5) return;
+  var k1 = P(t, 19.85, .55, 'io'), k2 = P(t, 24.85, .6, 'io');
+  var y = lerp(lerp(860, 560, k1), 820, k2), x0 = lerp(lerp(150, 72, k1), 150, k2), x1 = lerp(lerp(930, 1008, k1), 930, k2);
+  poly([[x0, y], [x1, y]], 1, { w: lerp(lerp(2.6, 1.4, k1), 2.4, k2), a: lerp(lerp(1, .6, k1), 1, k2) });
 }
 
-/* ================= contact sheet: all seven figures ================= */
-var CELLS = [[72, 150], [564, 150], [72, 440], [564, 440], [72, 730], [564, 730], [72, 1020], [564, 1020]];
-var CW = 444, CH = 250;
-var CELL_LBL = ['FIG. 1  KETTLECROSS', 'FIG. 2  MOBILITY AGE', 'FIG. 3  FORGE', 'FIG. 4  THROWN', 'FIG. 5  DUTY DILIGENCE', 'FIG. 6  PITCH PERSONA', 'FIG. 7  VANTAGE', 'FIG. 8'];
-var MINI = [
-  { c: [540, 590], s: .4 }, { c: [520, 760], s: .5 }, { c: [540, 540], s: .38 }, { c: [540, 595], s: .36 },
-  { c: [540, 620], s: .4 }, { c: [540, 620], s: .4 }, { c: [540, 650], s: .34 }
+/* ================= FIGS. 4 and 5: on the bench ================= */
+var COURT = [
+  [[-200, -460], [200, -460]], [[200, -460], [200, 460]], [[200, 460], [-200, 460]], [[-200, 460], [-200, -460]],
+  [[-150, -460], [-150, 460]], [[150, -460], [150, 460]], [[-150, -248], [150, -248]], [[-150, 248], [150, 248]],
+  [[0, -248], [0, 248]], [[0, 460], [0, 444]], [[0, -460], [0, -444]]
 ];
-function cellMap(i) { var m = MINI[i], cx = CELLS[i][0] + CW / 2, cy = CELLS[i][1] + CH / 2 + 14; return { cx: cx, cy: cy, s: m.s, c: m.c }; }
-function withCell(i, k, fn) {
-  var m = cellMap(i), s = lerp(1, m.s, k);
-  ctx.save(); ctx.translate(lerp(m.c[0], m.cx, k), lerp(m.c[1], m.cy, k)); ctx.scale(s, s); ctx.translate(-m.c[0], -m.c[1]);
-  var old = LW; LW = .8 / s * k + (1 - k); fn(); LW = old; ctx.restore();
+function planeP(u, v, h, st) {
+  var ct = Math.cos(st.tau), sn = Math.sin(st.tau), y = v * ct - h * sn, depth = -v * sn - h * ct, f = 1 / (1 + st.persp * depth / 900);
+  return [st.cx + st.s * u * f, st.cy + st.s * y * f, f];
 }
-function mini(i, pg) {
-  if (i === 0) drawKCOutline(pg, 0, 1, false);
-  if (i === 1) { drawSkel(fk(SQUAT), 1, pg, 1, 4); poly([[300, 918], [700, 918]], pg, { w: 2, col: DIM }); }
-  if (i === 2) {
-    poly(rrect(390, 300, 300, 480, 30), pg, { w: 2.8 });
-    for (var m = 0; m < 18; m++) { var p = magnetPos(m); poly(circ(p[0], p[1], 12, 16), pg, { w: 2.2 }); }
-  }
-  if (i === 3) { poly(vaseSil(.45), pg, { w: 2.8 }); [0.25, 0.55, 0.8].forEach(function (f) { var pr3 = vaseProf(.45)[Math.round(f * 44)]; poly(circ(540, pr3[1], 1, 48).map(function (p) { return [540 + (p[0] - 540) * pr3[0], pr3[1] + (p[1] - pr3[1]) * pr3[0] * .22]; }), pg, { w: 1.8, col: SOFT }); }); }
-  if (i === 4) { poly([[150, 380], [150, 860], [930, 860]], pg, { w: 2.6 }); poly(ddLine(99), pg, { w: 2.8 }); }
-  if (i === 5) {
-    var st = { tau: 0, cy: 620, persp: 0, s: 1, k: 0 };
-    drawCourt(st, 0, pg); pl(circ(0, 0, 60, 40), st, pg, { w: 2.2 });
-    PPA.forEach(function (p) { var q = pp3(p[0], p[1], 0, st); dot(q[0], q[1], 12 * pg); });
-    PPD.forEach(function (p) { var q = pp3(p[0], p[1], 0, st); ring(q[0], q[1], 12 * pg, 1, 2.4); });
-  }
+function pline(a, b, st, prog, o) {
+  var pts = []; for (var i = 0; i <= 8; i++) { var q = planeP(lerp(a[0], b[0], i / 8), lerp(a[1], b[1], i / 8), 0, st); pts.push([q[0], q[1]]); }
+  poly(pts, prog, o);
 }
-function sceneSheet(t) {
-  if (t < 31.9) return;
-  // Fig. 7 shrinks into its cell while the others draw in
-  withCell(6, P(t, 31.9, .65, 'io'), function () { scenePitch(Math.min(t, 31.9)); });
-  for (var i = 0; i < 8; i++) {
-    var x = CELLS[i][0], y = CELLS[i][1], pg = P(t, 31.95 + i * .06, .55, 'io');
-    var dash = i === 7 ? [10, 8] : null;
-    poly([[x, y], [x + CW, y], [x + CW, y + CH], [x, y + CH], [x, y]], pg, { w: i === 7 ? 2 : 1.4, col: i === 7 ? WHITE : DIM, dash: dash });
-    text(CELL_LBL[i], x + 16, y + 30, { size: 16, a: P(t, 32.2 + i * .06, .3), col: i === 7 ? WHITE : DIM });
-    if (i < 6) withCell(i, 1, function () { mini(i, P(t, 32.05 + i * .08, .6, 'io')); });
+function ballAt(t, B) {
+  if (t <= B.t1) { var s = clamp((t - B.t0) / (B.t1 - B.t0)); return [lerp(B.a[0], B.b[0], s), lerp(B.a[1], B.b[1], s), 30 * (1 - s) + 4 * 170 * s * (1 - s)]; }
+  var s2 = clamp((t - B.t1) / (B.t2 - B.t1)); return [lerp(B.b[0], B.c[0], s2), lerp(B.b[1], B.c[1], s2), 4 * 50 * s2 * (1 - s2) + 30 * s2 * s2];
+}
+var BALL = { t0: 21.75, t1: 22.3, t2: 22.5, a: [-90, -400, 30], b: [118, 430, 0], c: [132, 490, 30] };
+function sceneBench(t) {
+  if (t < 20.2 || t > 25.5) return;
+  var out = P(t, 24.75, .5, 'io'), live = 1 - out;
+  text('FIG. 4  FORGE', 96, 150, { size: 18, a: P(t, 20.4, .3) * live });
+  text('FIG. 5  VANTAGE', 96, 598, { size: 18, a: P(t, 20.55, .3) * live });
+
+  // Forge: the stand turns from three-quarter to true side view
+  var kr = P(t, 21.2, 1.8, 'io');
+  var c = { yaw: lerp(-28, -90, kr) * D2R, pitch: lerp(16, 0, kr) * D2R, persp: .35 * (1 - kr), D: 900, s: .6, ox: 572, oy: 330 };
+  function dr(i) { return P(t, 20.3 + i * .03, .6, 'io'); }
+  line3(FG.front, c, dr(0), { w: 2.4, a: live }); line3(FG.back, c, dr(1), { w: 2, a: live });
+  FG.edges.forEach(function (e, i) { line3(e, c, dr(2 + i), { w: 2, a: live }); });
+  line3(FG.phone, c, dr(6), { w: 2.4, a: live }); FG.phoneEdges.forEach(function (e, i) { line3(e, c, dr(7 + i), { w: 1.8, a: live }); });
+  FG.mags.forEach(function (m, i) { line3(m, c, dr(11 + i * .25), { w: 1.6, a: live }); });
+  FG.base.forEach(function (e, i) { line3(e, c, dr(14 + i * .5), { w: 2.2, a: live }); });
+  var aa = env(t, 23.05, 24.75, .3, .25);
+  if (aa > 0) {
+    var h = pr(FG.P3(0, 0, 0), c), top = pr(FG.P3(0, 480, 0), c), va = -Math.PI / 2, pa = Math.atan2(top[1] - h[1], top[0] - h[0]);
+    poly([[h[0], h[1]], [h[0], h[1] - 190]], P(t, 23.0, .3), { w: 1.6, col: DIM, dash: [8, 6], a: live });
+    poly(arc(h[0], h[1], 105, va, pa, 20), P(t, 23.1, .3), { w: 2.2, a: aa });
+    text('20°', h[0] + 14, h[1] - 96, { size: 26, col: WHITE, a: aa });
+  }
+
+  // Vantage: one phone behind the baseline calls the bounce
+  var st = { tau: 62 * D2R, cx: 540, cy: 742, persp: 1, s: .48 };
+  COURT.forEach(function (sg, i) { pline(sg[0], sg[1], st, P(t, 20.45 + i * .04, .45, 'io'), { w: 2.2, a: live }); });
+  pline([-222, 0], [222, 0], st, P(t, 20.9, .4, 'io'), { w: 3.2, a: live });
+  var ph = [540, 962];
+  poly(rrect(ph[0] - 11, ph[1] - 18, 22, 36, 5), P(t, 21.0, .35), { w: 2, a: live });
+  var fa = env(t, 21.1, 21.9, .3, .4) * live;
+  [[-200, -460], [200, -460]].forEach(function (cn) { var q = planeP(cn[0], cn[1], 0, st); poly([[ph[0], ph[1] - 18], [q[0], q[1]]], P(t, 21.1, .4, 'io'), { w: 1.3, col: DIM, dash: [7, 6], a: fa }); });
+  if (t >= BALL.t0) {
+    var gone = 1 - P(t, BALL.t1 + .04, .16);
+    for (var g = 9; g >= 0; g--) {
+      var tt = t - g * .022; if (tt < BALL.t0) continue;
+      var b = ballAt(Math.min(tt, BALL.t2), BALL), s3 = planeP(b[0], b[1], b[2], st), sh = planeP(b[0], b[1], 0, st);
+      if (g === 0) { dot(sh[0], sh[1], 4 * sh[2], .25 * gone * live); dot(s3[0], s3[1], 5.5 * s3[2], gone * live); }
+      else dot(s3[0], s3[1], 5 * s3[2] * (1 - g / 11), (1 - g / 10) * .35 * gone * live);
+    }
+  }
+  if (t >= BALL.t1) {
+    var mk = P(t, BALL.t1, .25, 'back'), mark = [];
+    for (var m = 0; m <= 32; m++) { var an = m / 32 * 2 * Math.PI, q2 = planeP(BALL.b[0] + 15 * mk * Math.cos(an), BALL.b[1] + 11 * mk * Math.sin(an), 0, st); mark.push([q2[0], q2[1]]); }
+    poly(mark, 1, { w: 2, fill: 'rgba(255,255,255,.18)', a: live });
+    var sb = planeP(BALL.b[0], BALL.b[1], 0, st), rp = P(t, BALL.t1, .6);
+    ring(sb[0], sb[1], 8 + 30 * rp, (1 - rp) * live, 1.6);
+    if (t >= 22.48) {
+      var ia = P(t, 22.48, .25, 'back');
+      ctx.save(); ctx.translate(sb[0] + 26, sb[1] - 18); ctx.scale(ia, ia);
+      text('IN', 0, 0, { sans: true, weight: 800, size: 40, col: WHITE, ls: -1, a: live });
+      ctx.restore();
+    }
   }
 }
 
-/* ================= end card ================= */
-function sceneEnd(t) {
-  if (t < 35.3) return;
-  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
-  var y = 862, x0 = 96, x1 = 96 + 600, pg = P(t, 35.6, .6, 'io');
-  poly([[x0, y - 14], [x0, y + 14]], pg, { w: 1.6, col: DIM }); poly([[x1, y - 14], [x1, y + 14]], pg, { w: 1.6, col: DIM });
-  poly([[x0, y], [x1, y]], pg, { w: 1.6, col: DIM });
-  arrowHead([x1, y], [x0, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM }); arrowHead([x0, y], [x1, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM });
+/* ================= the same for other people ================= */
+var CS = { x: [150, 345, 540, 735, 930], y: 820, iy: 660, lbl: ['SKETCH', 'PROTOTYPE', 'IP', 'SUPPLIERS', 'WEBSITE'], t0: 25.75, dur: 2.7 };
+CS.tc = CS.x.map(function (x) { return CS.t0 + CS.dur * (x - 150) / 780; });
+function jitter(pts, seed, amt) { return pts.map(function (p, j) { return [p[0] + Math.sin(j * 12.9898 + seed) * amt, p[1] + Math.cos(j * 78.233 + seed * 1.7) * amt]; }); }
+function stageIcon(i, cx, cy, pg) {
+  if (pg <= 0) return;
+  if (i === 0) {
+    var s = .34, parts = [KC.outer, KC.inner].concat([kcMass(-109, 1).pts, kcMass(109, 1).pts].map(function (p) { return p.map(function (q) { return [(q[0] - KC.ox) / KC.s, (q[1] - KC.oy) / KC.s]; }); }));
+    parts.forEach(function (pt, k) {
+      var mp = resample(pt, 40).map(function (q) { return [cx + q[0] * s, cy + 6 + q[1] * s]; });
+      poly(jitter(mp, k * 3.1, 1.6), clamp(pg * 1.4 - k * .1), { w: 1.8 });
+      poly(jitter(mp, k * 3.1 + 9, 2.2), clamp(pg * 1.4 - k * .1 - .2), { w: 1.2, col: SOFT });
+    });
+  }
+  if (i === 1) {
+    var n = 14, done = pg * n;
+    for (var k = 0; k < n; k++) {
+      var f = k / (n - 1), y = cy + 52 - f * 104, r = 20 + 26 * Math.sin(Math.PI * (.15 + .7 * f)) - 10 * f;
+      poly([[cx - r, y], [cx + r, y]], clamp(done - k), { w: 2.2 });
+      if (done > k && done < k + 1) dot(cx - r + 2 * r * (done - k), y - 6, 4);
+    }
+  }
+  if (i === 2) {
+    var w = 42, h = 56;
+    poly([[cx - w, cy - h], [cx + w - 18, cy - h], [cx + w, cy - h + 18], [cx + w, cy + h], [cx - w, cy + h], [cx - w, cy - h]], pg, { w: 2.2 });
+    poly([[cx + w - 18, cy - h], [cx + w - 18, cy - h + 18], [cx + w, cy - h + 18]], pg, { w: 1.6 });
+    [kcMass(-109, 1).pts, kcMass(109, 1).pts, KC.outer.map(kcS)].forEach(function (pt) {
+      poly(pt.map(function (q) { return [cx + (q[0] - KC.ox) * .1, cy - 4 + (q[1] - KC.oy) * .1]; }), clamp(pg * 1.3 - .3), { w: 1.4 });
+    });
+    poly([[cx - 28, cy + 34], [cx + 28, cy + 34]], clamp(pg * 1.5 - .5), { w: 1.4, col: SOFT });
+    poly([[cx - 28, cy + 44], [cx + 10, cy + 44]], clamp(pg * 1.5 - .6), { w: 1.4, col: SOFT });
+  }
+  if (i === 3) {
+    var A = [cx, cy - 52], B = [cx + 56, cy - 24], C = [cx, cy + 4], D = [cx - 56, cy - 24];
+    poly([A, B, C, D, A], pg, { w: 2.2 });
+    poly([D, [D[0], D[1] + 60], [C[0], C[1] + 60], [B[0], B[1] + 60], B], pg, { w: 2.2 });
+    poly([C, [C[0], C[1] + 60]], pg, { w: 2.2 });
+    poly([[cx - 28, cy - 38], [cx + 28, cy - 10]], clamp(pg * 1.4 - .4), { w: 1.6, col: SOFT });
+  }
+  if (i === 4) {
+    poly(rrect(cx - 56, cy - 40, 112, 80, 7), pg, { w: 2.2 });
+    poly([[cx - 56, cy - 26], [cx + 56, cy - 26]], pg, { w: 1.6 });
+    [0, 1, 2].forEach(function (k) { dot(cx - 46 + k * 9, cy - 33, 2.4, clamp(pg * 2 - 1)); });
+    poly([[cx - 40, cy - 8], [cx + 20, cy - 8]], clamp(pg * 1.5 - .5), { w: 1.6, col: SOFT });
+    poly([[cx - 40, cy + 4], [cx + 30, cy + 4]], clamp(pg * 1.5 - .6), { w: 1.6, col: SOFT });
+    poly(rrect(cx - 40, cy + 16, 34, 12, 6), clamp(pg * 1.5 - .7), { w: 1.6 });
+  }
+}
+function sceneConsult(t) {
+  if (t < 25.3 || t > 30.4) return;
+  var out = P(t, 29.45, .5, 'io'), live = 1 - out;
+  if (t >= 25.45) poly([[150, CS.y], [930, CS.y]], 1, { w: 2.4, a: live });
+  var px = lerp(150, 930, P(t, CS.t0, CS.dur, 'lin'));
+  if (t > CS.t0 && t < CS.t0 + CS.dur) pen(px, CS.y, live);
+  CS.x.forEach(function (x, i) {
+    var ti = CS.tc[i], g = P(t, ti, .35, 'back') * live;
+    dot(x, CS.y, 11 * g, 1, BG); ring(x, CS.y, 11 * g, g > 0 ? live : 0, 2.4); dot(x, CS.y, 4 * g, live);
+    text(CS.lbl[i], x, CS.y + 52, { size: 20, align: 'center', a: P(t, ti + .05, .3) * live });
+    if (i < 4 || t < 29.5) { ctx.save(); ctx.globalAlpha *= i < 4 ? live : 1; stageIcon(i, x, CS.iy, P(t, ti + .02, .7, 'io')); ctx.restore(); }
+  });
+}
+
+/* ================= websites: a deck of browser windows ================= */
+var WIN = { cx: 540, cy: 560, w: 720, h: 520 };
+function xbox(x, y, w, h, prog, a) { poly([[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], prog, { w: 1.6, a: a }); poly([[x, y], [x + w, y + h]], prog, { w: 1, col: DIM, a: a }); poly([[x + w, y], [x, y + h]], prog, { w: 1, col: DIM, a: a }); }
+function bar(x, y, w, prog, a, thick) { poly([[x, y], [x + w, y]], prog, { w: thick || 2, col: thick ? WHITE : SOFT, a: a }); }
+function pill(x, y, w, h, prog, a, fill) { poly(rrect(x, y, w, h, h / 2), prog, { w: 1.6, a: a, fill: fill }); }
+// iplumbyorkshire.co.uk, drawn from its real section order
+function siteIplum(W2, pg) {
+  var L = -W2 / 2 + 30, R = W2 / 2 - 30, CW = R - L, y = 0, k = 0;
+  function nx() { return clamp(pg * 18.5 - (k++) * .25); }
+  pill(L, y + 10, 92, 20, nx(), 1); [0, 1, 2, 3].forEach(function (i) { bar(R - 300 + i * 56, y + 20, 38, nx(), 1); }); pill(R - 70, y + 8, 70, 24, nx(), 1, 'rgba(255,255,255,.18)');
+  y += 50; xbox(L, y, CW, 200, nx(), .9);
+  bar(L + 30, y + 60, 300, nx(), 1, 7); bar(L + 30, y + 86, 240, nx(), 1, 7); bar(L + 30, y + 116, 200, nx(), 1); pill(L + 30, y + 140, 110, 30, nx(), 1, 'rgba(255,255,255,.25)');
+  y += 220; [0, 1, 2, 3].forEach(function (i) { var x = L + i * CW / 4 + 20; ring(x + 8, y + 10, 8 * nx(), 1, 1.6); bar(x + 24, y + 10, 80, nx(), 1); });
+  y += 50; bar(-90, y, 180, nx(), 1, 4);
+  y += 26; [0, 1, 2].forEach(function (i) { var x = L + i * (CW + 20) / 3, w = (CW - 40) / 3; poly(rrect(x, y, w, 120, 8), nx(), { w: 1.6 }); ring(x + 30, y + 30, 14 * nx(), 1, 1.6); bar(x + 20, y + 70, w - 40, nx(), 1); bar(x + 20, y + 90, w - 70, nx(), 1); });
+  y += 150; bar(-110, y, 220, nx(), 1, 4);
+  y += 26; for (var r = 0; r < 2; r++) for (var c = 0; c < 3; c++) { var w3 = (CW - 40) / 3; xbox(L + c * (w3 + 20), y + r * 110, w3, 96, nx(), .8); }
+  y += 240; bar(-150, y, 300, nx(), 1, 4);
+  y += 40; [0, 1, 2, 3].forEach(function (i) { var x = L + 40 + i * (CW - 80) / 3; ring(x, y + 20, 18 * nx(), 1, 2); if (i < 3) bar(x + 24, y + 20, (CW - 80) / 3 - 48, nx(), .7); bar(x - 30, y + 60, 60, nx(), 1); });
+  y += 100; bar(-110, y, 220, nx(), 1, 4);
+  y += 26; [0, 1, 2].forEach(function (i) { var x = L + i * (CW + 20) / 3, w = (CW - 40) / 3; poly(rrect(x, y, w, 100, 8), nx(), { w: 1.6 }); text('“', x + 14, y + 40, { size: 40, sans: true, col: SOFT, a: nx() }); bar(x + 20, y + 56, w - 40, nx(), 1); bar(x + 20, y + 74, w - 60, nx(), 1); });
+  y += 130; poly(rrect(L, y, CW, 150, 10), nx(), { w: 1.6, fill: 'rgba(255,255,255,.08)' }); bar(-140, y + 50, 280, nx(), 1, 5); pill(-70, y + 82, 140, 34, nx(), 1, 'rgba(255,255,255,.25)');
+}
+function siteA(W2, pg) {
+  var L = -W2 / 2 + 30, R = W2 / 2 - 30, CW = R - L;
+  pill(L, 10, 80, 20, pg, 1); [0, 1, 2].forEach(function (i) { bar(R - 200 + i * 66, 20, 46, pg, 1); });
+  bar(L, 110, 260, pg, 1, 8); bar(L, 140, 220, pg, 1, 8); bar(L, 176, 240, pg, 1); bar(L, 196, 200, pg, 1); pill(L, 226, 120, 32, pg, 1, 'rgba(255,255,255,.25)');
+  xbox(L + CW / 2 + 10, 80, CW / 2 - 10, 220, pg, .9);
+  [0, 1].forEach(function (r) { xbox(L, 330 + r * 90, 150, 70, pg, .8); bar(L + 170, 350 + r * 90, 260, pg, 1, 4); bar(L + 170, 374 + r * 90, 360, pg, 1); });
+}
+function siteB(W2, pg) {
+  var L = -W2 / 2 + 30, R = W2 / 2 - 30, CW = R - L;
+  pill(-40, 10, 80, 20, pg, 1);
+  bar(-200, 100, 400, pg, 1, 8); bar(-150, 130, 300, pg, 1, 8); bar(-170, 166, 340, pg, 1);
+  pill(-190, 196, 260, 34, pg, 1); pill(80, 196, 110, 34, pg, 1, 'rgba(255,255,255,.25)');
+  [0, 1, 2, 3, 4].forEach(function (i) { pill(L + 20 + i * (CW - 40) / 5, 266, 70, 18, pg, .7); });
+  [0, 1, 2].forEach(function (i) { var x = L + i * (CW + 20) / 3, w = (CW - 40) / 3; poly(rrect(x, 312, w, 150, 8), pg, { w: 1.6 }); bar(x + 20, 350, w - 60, pg, 1, 4); bar(x + 20, 380, w - 40, pg, 1); bar(x + 20, 400, w - 50, pg, 1); pill(x + 20, 424, 90, 24, pg, 1); });
+}
+function siteC(W2, pg) {
+  var L = -W2 / 2 + 30, CW = W2 - 60;
+  xbox(L, 50, CW, 260, pg, .9); bar(L, 340, 300, pg, 1, 6); bar(L, 370, CW, pg, 1); bar(L, 390, CW - 80, pg, 1); bar(L, 410, CW - 140, pg, 1);
+}
+function browser(cx, cy, w, h, rot, a, url, urlN, content, pg, scroll) {
+  if (a <= 0) return;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.globalAlpha *= a;
+  var x0 = -w / 2, y0 = -h / 2;
+  ctx.fillStyle = '#12318F'; ctx.beginPath(); rrect(x0, y0, w, h, 14).forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); ctx.fill();
+  poly(rrect(x0, y0, w, h, 14), 1, { w: 2.4 });
+  poly([[x0, y0 + 46], [x0 + w, y0 + 46]], 1, { w: 1.6 });
+  [0, 1, 2].forEach(function (k) { ring(x0 + 24 + k * 18, y0 + 23, 5, 1, 1.6); });
+  if (w > 300) pill(x0 + 100, y0 + 12, w - 200, 22, 1, .9);
+  if (url && w > 300) text(url.slice(0, urlN), x0 + 116, y0 + 28, { size: 15, col: WHITE, ls: .5 });
+  ctx.save(); ctx.beginPath(); ctx.rect(x0 + 2, y0 + 48, w - 4, h - 50); ctx.clip();
+  ctx.translate(0, y0 + 56 - (scroll || 0));
+  content(w, pg);
+  ctx.restore();
   ctx.restore();
 }
+function sceneWeb(t) {
+  if (t < 29.45 || t > 35.2) return;
+  var grow = P(t, 29.5, .8, 'io');
+  // the back of the deck deals in, the unnamed sites
+  var back = [[siteC, -7, -46, -26], [siteB, -3.5, -24, -12], [siteA, 3.5, 22, -8]];
+  var shuffle1 = P(t, 32.75, .5, 'io'), shuffle2 = P(t, 33.55, .5, 'io'), leave = P(t, 34.3, .5, 'io');
+  back.forEach(function (b, i) {
+    var d = P(t, 30.2 + i * .1, .55, 'out5'), x = b[2], y = b[3], r = b[1], a = .55;
+    if (i === 2) { x = lerp(x, 0, shuffle1); y = lerp(y, 0, shuffle1); r = lerp(r, 0, shuffle1); a = lerp(.55, 1, shuffle1); x -= 900 * shuffle2; r -= 14 * shuffle2; }
+    if (i === 1) { x = lerp(x, 0, shuffle2); y = lerp(y, 0, shuffle2); r = lerp(r, 0, shuffle2); a = lerp(.55, 1, shuffle2); }
+    y += (1 - d) * 900 - leave * 1000 * (i === 1 ? 1 : 1.15);
+    browser(WIN.cx + x, WIN.cy + y, WIN.w, WIN.h, r * D2R, a * (d > 0 ? 1 : 0), null, 0, b[0], 1, 0);
+  });
+  // the named site comes up out of the WEBSITE stage
+  var cx = lerp(930, WIN.cx, grow), cy = lerp(CS.iy, WIN.cy, grow), w = lerp(112, WIN.w, grow), h = lerp(80, WIN.h, grow);
+  var url = 'iplumbyorkshire.co.uk', urlN = Math.floor(clamp((t - 30.35) / .6) * url.length);
+  var scroll = 830 * P(t, 31.55, 1.0, 'io');
+  if (shuffle1 < 1) browser(cx + 900 * shuffle1, cy, w, h, 12 * shuffle1 * D2R, grow > 0 ? 1 : 0, grow > .9 ? url : null, urlN, siteIplum, P(t, 30.45, 1.0, 'lin'), scroll);
+}
+function sceneEnd(t) {
+  if (t < 35.7) return;
+  var y = 744, x0 = 96, x1 = 96 + 556, pg = P(t, 35.9, .6, 'io');
+  poly([[x0, y - 12], [x0, y + 12]], pg, { w: 1.6, col: DIM }); poly([[x1, y - 12], [x1, y + 12]], pg, { w: 1.6, col: DIM });
+  poly([[x0, y], [x1, y]], pg, { w: 1.6, col: DIM, pen: true });
+  arrowHead([x1, y], [x0, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM }); arrowHead([x0, y], [x1, y], pg >= 1 ? 1 : 0, { w: 1.6, col: DIM });
+}
+
 
 /* ================= kinetic type (DOM) ================= */
 var TXT = document.getElementById('txt'), texts = [];
@@ -809,7 +782,7 @@ function updateText(t) {
     if (!vis) return;
     o.units.forEach(function (u, i) {
       if (o.mode === 'type') {
-        var on = t >= o.tin + i * .032, off = o.tout != null && t >= o.tout + (n - i) * .008;
+        var sp = o.speed || .032, on = t >= o.tin + i * sp, off = o.tout != null && t >= o.tout + (n - i) * .008;
         u.style.display = on && !off ? 'inline-block' : 'none'; return;
       }
       var st = o.mode === 'word' ? .045 : .022;
@@ -818,7 +791,7 @@ function updateText(t) {
       u.style.transform = 'translateY(' + y.toFixed(2) + '%) rotate(' + r.toFixed(2) + 'deg)';
     });
     if (o.caretEl) {
-      var typed = t >= o.tin + n * .032;
+      var typed = t >= o.tin + n * (o.speed || .032);
       o.caretEl.style.opacity = !typed ? (t >= o.tin ? 1 : 0) : (Math.floor((t - o.tin) * 2.4) % 2 === 0 ? 1 : 0);
     }
   });
@@ -835,36 +808,29 @@ var NAME_Y = 1000, SUB_Y = 1122, DET_Y = 1240;
 
   { t: 'Mobility Age', x: 96, y: NAME_Y, size: 104, tin: 9.7, tout: 15.8 },
   { t: 'Four phone photos give you\na mobility age', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 10.05, tout: 15.8 },
-  { t: 'Pose error 4 to 6° · was 10 to 12°', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', tin: 13.7, tout: 14.55 },
-  { t: 'mobilityage.co.uk · also for PTs and physios', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 14.7, tout: 15.75 },
+  { t: 'Pose error 4 to 6° (it was 10 to 12°)', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', speed: .018, tin: 13.7, tout: 14.55 },
+  { t: 'mobilityage.co.uk, also for PTs and physios', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', speed: .02, tin: 14.65, tout: 15.85 },
 
-  { t: 'Forge', x: 96, y: NAME_Y, size: 104, tin: 16.8, tout: 19.5 },
-  { t: 'A MagSafe stand with 18 N52 magnets\nin a 57 mm ring', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 17.05, tout: 19.5 },
-  { t: 'Face tilted at 20°', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', col: '#fff', tin: 18.85, tout: 19.45 },
+  { t: 'Duty Diligence', x: 96, y: NAME_Y, size: 104, tin: 16.3, tout: 19.75 },
+  { t: 'US import duty and margin for every\nproduct in a Shopify store', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 16.55, tout: 19.75 },
+  { t: 'Live on the Shopify App Store', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 17.0, tout: 19.7 },
 
-  { t: 'Thrown', x: 96, y: NAME_Y, size: 104, tin: 20.35, tout: 22.8 },
-  { t: 'Design 3D-printable vases and\nplanters in the browser', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 20.6, tout: 22.8 },
-  { t: 'thrown.netlify.app', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 21.3, tout: 22.75 },
+  { t: 'On the bench', x: 96, y: NAME_Y, size: 104, tin: 20.45, tout: 24.7 },
+  { t: 'Forge (a MagSafe stand) and Vantage\n(tennis line calls from one phone)', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 20.7, tout: 24.7 },
 
-  { t: 'Duty Diligence', x: 96, y: NAME_Y, size: 104, tin: 23.6, tout: 25.88 },
-  { t: 'US import duty and margin for\nShopify stores', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 23.85, tout: 25.88 },
-  { t: 'Checks the US tariff schedule twice a day', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 24.2, tout: 25.85 },
+  { t: 'I do the same for\ninventors and\nsmall companies', x: 96, y: 126, size: 74, tin: 25.3, tout: 29.45 },
+  { t: 'From the first sketch to a supplier,\nand the website when it\'s ready', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 25.8, tout: 29.45 },
 
-  { t: 'Pitch Persona', x: 96, y: NAME_Y, size: 104, tin: 26.45, tout: 28.58 },
-  { t: '100 match scenarios for young hockey\nand football players', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 26.7, tout: 28.58 },
-  { t: 'pitchpersona.netlify.app', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 27.05, tout: 28.55 },
+  { t: 'Websites', x: 96, y: NAME_Y, size: 104, tin: 30.4, tout: 34.35 },
+  { t: 'iplumbyorkshire.co.uk (and a few\nI can\'t name)', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 30.65, tout: 34.35 },
 
-  { t: 'Vantage', x: 96, y: NAME_Y, size: 104, tin: 29.25, tout: 31.7 },
-  { t: 'Line calls and match stats from one\nphone behind the baseline', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 29.5, tout: 31.7 },
-  { t: 'Prototype', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 29.9, tout: 31.65 },
-
-  { t: 'Get in\ntouch', x: 90, y: 330, size: 210, tin: 34.55 },
-  { t: 'joshume@hotmail.com', x: 96, y: 770, size: 52, cls: 'mono', mode: 'type', col: '#fff', style: 'text-transform:none;letter-spacing:.02em', caret: true, tin: 35.1 },
-  { t: 'Joshua Hume · product developer and inventor', x: 96, y: 912, size: 32, cls: 'sub', mode: 'word', tin: 35.7 }
+  { t: 'Get in touch', x: 96, y: 540, size: 104, tin: 34.8 },
+  { t: 'joshume@hotmail.com', x: 96, y: 664, size: 48, cls: 'mono', mode: 'type', col: '#fff', style: 'text-transform:none;letter-spacing:.02em', caret: true, tin: 35.25 },
+  { t: 'Joshua Hume · In The Park Consulting Ltd', x: 96, y: 786, size: 30, cls: 'sub', mode: 'word', tin: 36.0 }
 ].forEach(addText);
 
 /* header strip */
-var HDR = [[0, 'Fig. 1 · KettleCross'], [9.4, 'Fig. 2 · Mobility Age'], [16.6, 'Fig. 3 · Forge'], [20.25, 'Fig. 4 · Thrown'], [23.4, 'Fig. 5 · Duty Diligence'], [26.35, 'Fig. 6 · Pitch Persona'], [29.15, 'Fig. 7 · Vantage'], [31.95, 'Figs. 1 to 7'], [33.75, 'Fig. 8']];
+var HDR = [[0, 'Fig. 1 · KettleCross'], [9.4, 'Fig. 2 · Mobility Age'], [16.2, 'Fig. 3 · Duty Diligence'], [20.25, 'Figs. 4 and 5 · On the bench'], [25.25, 'In The Park Consulting']];
 var hdrL = document.createElement('div');
 hdrL.className = 't mono'; hdrL.style.cssText = 'left:72px;top:64px;font-size:22px;color:#fff'; hdrL.textContent = 'Joshua Hume';
 TXT.appendChild(hdrL);
@@ -875,7 +841,7 @@ var hdrEls = HDR.map(function (h) {
 });
 function updateHeader(t) {
   HDR.forEach(function (h, i) {
-    var next = HDR[i + 1] ? HDR[i + 1][0] : 1e9, pin = i === 0 ? 1 : P(t, h[0], .45, 'out5'), pout = P(t, next - .05, .35, 'in');
+    var next = HDR[i + 1] ? HDR[i + 1][0] : 1e9, pin = i === 0 ? 1 : P(t, h[0] + .22, .45, 'out5'), pout = P(t, next - .1, .3, 'in');
     hdrEls[i].style.transform = 'translateY(' + ((1 - pin) * 110 - pout * 110).toFixed(1) + '%)';
     hdrEls[i].parentNode.style.visibility = t >= h[0] - .1 && t <= next + .5 ? 'visible' : 'hidden';
   });
@@ -907,20 +873,13 @@ function seek(t) {
   ctx.save();
   ctx.beginPath(); ctx.rect(37, 106, 1006, 1207); ctx.clip();
   ctx.setTransform(cam.z, 0, 0, cam.z, 540 - cam.x * cam.z, 675 - cam.y * cam.z);
-  sceneKC(t); sceneMA(t); sceneForge(t); sceneThrown(t); sceneDD(t);
-  if (t < 31.9) scenePitch(t);
-  sceneSheet(t);
+  sceneKC(t); sceneMA(t); sceneDD(t); divider(t); sceneBench(t); sceneConsult(t); sceneWeb(t);
   ctx.restore();
-  ctx.save(); ctx.beginPath(); ctx.rect(37, 37, 1006, 1276); ctx.clip(); sceneEnd(t); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.rect(37, 106, 1006, 1207); ctx.clip(); sceneEnd(t); ctx.restore();
   updateText(t); updateHeader(t);
   flash.style.opacity = maFlash(t).toFixed(3);
 }
 window.seek = seek;
-
-// the bounce point drives the Vantage zoom
-(function () { var st = { tau: 62 * D2R, cy: 520, persp: 1, s: 1 }, b = pp3(BALL.b[0], BALL.b[1], 0, st); CAM_MOVES[4][2] = b[0]; CAM_MOVES[4][3] = b[1] - 10; })();
-// zoom into Fig. 8: centre of that cell
-CAM_MOVES[6][2] = CELLS[7][0] + CW / 2; CAM_MOVES[6][3] = CELLS[7][1] + CH / 2;
 
 var render = /render=1/.test(location.search);
 document.fonts.ready.then(function () {
