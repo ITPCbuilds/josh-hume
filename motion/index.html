@@ -529,11 +529,11 @@ function sceneDD(t) {
 function divider(t) {
   if (t < 19.85 || t > 25.5) return;
   var k1 = P(t, 19.85, .55, 'io'), k2 = P(t, 24.85, .6, 'io');
-  var y = lerp(lerp(860, 560, k1), 820, k2), x0 = lerp(lerp(150, 72, k1), 150, k2), x1 = lerp(lerp(930, 1008, k1), 930, k2);
+  var y = lerp(lerp(860, 552, k1), 820, k2), x0 = lerp(lerp(150, 72, k1), 150, k2), x1 = lerp(lerp(930, 1008, k1), 930, k2);
   poly([[x0, y], [x1, y]], 1, { w: lerp(lerp(2.6, 1.4, k1), 2.4, k2), a: lerp(lerp(1, .6, k1), 1, k2) });
 }
 
-/* ================= FIGS. 4 and 5: on the bench ================= */
+/* ================= FIGS. 4 to 7: smaller projects ================= */
 var COURT = [
   [[-200, -460], [200, -460]], [[200, -460], [200, 460]], [[200, 460], [-200, 460]], [[-200, 460], [-200, -460]],
   [[-150, -460], [-150, 460]], [[150, -460], [150, 460]], [[-150, -248], [150, -248]], [[-150, 248], [150, 248]],
@@ -547,61 +547,126 @@ function pline(a, b, st, prog, o) {
   var pts = []; for (var i = 0; i <= 8; i++) { var q = planeP(lerp(a[0], b[0], i / 8), lerp(a[1], b[1], i / 8), 0, st); pts.push([q[0], q[1]]); }
   poly(pts, prog, o);
 }
+function parc(cx, cy, r, a0, a1, st, prog, o) {
+  var pts = arc(cx, cy, r, a0, a1, 36).map(function (p) { var q = planeP(p[0], p[1], 0, st); return [q[0], q[1]]; });
+  poly(pts, prog, o);
+}
 function ballAt(t, B) {
   if (t <= B.t1) { var s = clamp((t - B.t0) / (B.t1 - B.t0)); return [lerp(B.a[0], B.b[0], s), lerp(B.a[1], B.b[1], s), 30 * (1 - s) + 4 * 170 * s * (1 - s)]; }
   var s2 = clamp((t - B.t1) / (B.t2 - B.t1)); return [lerp(B.b[0], B.c[0], s2), lerp(B.b[1], B.c[1], s2), 4 * 50 * s2 * (1 - s2) + 30 * s2 * s2];
 }
-var BALL = { t0: 21.75, t1: 22.3, t2: 22.5, a: [-90, -400, 30], b: [118, 430, 0], c: [132, 490, 30] };
+var BALL = { t0: 22.4, t1: 22.95, t2: 23.15, a: [-90, -400, 30], b: [118, 430, 0], c: [132, 490, 30] };
+var VA = [[72, 330], [40, 470], [250, 640], [86, 860]], VB = [[72, 330], [112, 450], [158, 720], [86, 860]];
+function vaseProf(m) { var c = VA.map(function (p, i) { return [lerp(p[0], VB[i][0], m), lerp(p[1], VB[i][1], m)]; }); return bez(c[0], c[1], c[2], c[3], 44); }
+var PPA = [[-210, 20], [-70, -150], [60, 140], [180, -100], [280, 70]], PPD = [[-120, -20], [20, -60], [150, 20], [260, -170]];
+function panelLabel(t, x, y, name, status, tin, a) {
+  text(name, x + 24, y + 36, { size: 16, a: P(t, tin, .3) * a });
+  var sa = P(t, tin + .12, .3) * a, live = status === 'LIVE';
+  text(status, x + 444, y + 36, { size: 14, align: 'right', col: live ? WHITE : DIM, a: sa });
+  ctx.save(); ctx.font = '500 14px "IBM Plex Mono"'; ctx.letterSpacing = '1.5px'; var w = ctx.measureText(status).width; ctx.restore();
+  var dx = x + 444 - w - 12;
+  if (live) dot(dx, y + 31, 4.5, sa); else ring(dx, y + 31, 4.5, sa, 1.4);
+}
 function sceneBench(t) {
-  if (t < 20.2 || t > 25.5) return;
+  if (t < 20.2 || t > 25.4) return;
   var out = P(t, 24.75, .5, 'io'), live = 1 - out;
-  text('FIG. 4  FORGE', 96, 150, { size: 18, a: P(t, 20.4, .3) * live });
-  text('FIG. 5  VANTAGE', 96, 598, { size: 18, a: P(t, 20.55, .3) * live });
+  poly([[540, 552], [540, 120]], P(t, 20.25, .45, 'io'), { w: 1.4, a: .6 * live });
+  poly([[540, 552], [540, 985]], P(t, 20.25, .45, 'io'), { w: 1.4, a: .6 * live });
+  panelLabel(t, 72, 120, 'FIG. 4  THROWN', 'LIVE', 20.35, live);
+  panelLabel(t, 540, 120, 'FIG. 5  PITCH PERSONA', 'LIVE', 20.45, live);
+  panelLabel(t, 72, 552, 'FIG. 6  FORGE', 'IN DEVELOPMENT', 20.55, live);
+  panelLabel(t, 540, 552, 'FIG. 7  VANTAGE', 'PROTOTYPE', 20.65, live);
+
+  // Thrown: drag the profile, then revolve it into a vase
+  var m = P(t, 20.95, .5, 'io') - .55 * P(t, 21.45, .45, 'io'), prof = vaseProf(m), S = .56, VX = 306, VY = 356;
+  var sil = prof.map(function (p) { return [VX + p[0] * S, VY + (p[1] - 595) * S]; });
+  var silL = prof.slice().reverse().map(function (p) { return [VX - p[0] * S, VY + (p[1] - 595) * S]; });
+  var flat = 1 - P(t, 21.6, .3);
+  poly([[VX, VY - 290 * S], [VX, VY + 295 * S]], P(t, 20.4, .4, 'io'), { w: 1.2, col: DIM, dash: [7, 6], a: live });
+  poly(sil.concat(silL, [sil[0]]), P(t, 20.45, .55, 'io'), { w: 2.4, a: flat * live, pen: true });
+  var rv = P(t, 21.6, 1.0, 'io');
+  if (rv > 0) {
+    var c3 = { yaw: (t - 21.6) * 1.0, pitch: 18 * D2R * P(t, 21.5, .45, 'io'), persp: .6, D: 900, s: S, ox: VX, oy: VY };
+    for (var k = 0; k < 24; k++) {
+      var th = k * 15; if (th > rv * 360 + .01) break;
+      line3(prof.map(function (p) { return [p[0] * Math.cos(th * D2R), p[1] - 595, p[0] * Math.sin(th * D2R)]; }), c3, 1, { w: 1.7, a: live, zr: 160 });
+    }
+    [0, 8, 16, 24, 32, 44].forEach(function (i) {
+      var p = prof[i], pts = [];
+      for (var j = 0; j <= 48; j++) { var a = j / 48 * rv * 2 * Math.PI; pts.push([p[0] * Math.cos(a), p[1] - 595, p[0] * Math.sin(a)]); }
+      line3(pts, c3, 1, { w: 1.5, a: live, zr: 160 });
+    });
+  }
+
+  // Pitch Persona: read the game, pick the pass
+  var sp = { tau: 0, cx: 774, cy: 360, persp: 0, s: .5 };
+  [[[-390, -240], [390, -240]], [[390, -240], [390, 240]], [[390, 240], [-390, 240]], [[-390, 240], [-390, -240]], [[0, -240], [0, 240]]].forEach(function (sg, i) {
+    pline(sg[0], sg[1], sp, P(t, 20.5 + i * .06, .45, 'io'), { w: 2.2, a: live, pen: i === 0 });
+  });
+  parc(0, 0, 60, -Math.PI / 2, 1.5 * Math.PI, sp, P(t, 20.75, .4, 'io'), { w: 1.8, a: live });
+  parc(-390, 0, 110, -Math.PI / 2, Math.PI / 2, sp, P(t, 20.8, .4, 'io'), { w: 1.8, a: live });
+  parc(390, 0, 110, Math.PI / 2, 1.5 * Math.PI, sp, P(t, 20.85, .4, 'io'), { w: 1.8, a: live });
+  var dec = P(t, 21.95, .3), mv = P(t, 22.2, .5, 'io');
+  [1, 2, 3].forEach(function (j, i) {
+    var a = PPA[0], b = PPA[j], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), e = [b[0] - dx / L * 22, b[1] - dy / L * 22];
+    var chosen = j === 2, pg = P(t, 21.4 + i * .08, .35, 'io'), al = live * (chosen ? 1 : 1 - .75 * dec);
+    var A = planeP(a[0], a[1], 0, sp), B = planeP(e[0], e[1], 0, sp);
+    poly([[A[0], A[1]], [B[0], B[1]]], pg, { w: chosen ? lerp(1.8, 2.8, dec) : 1.8, dash: chosen && dec > .5 ? null : [7, 6], a: al });
+    arrowHead([A[0], A[1]], [B[0], B[1]], pg >= 1 ? 1 : 0, { w: 2, a: al });
+  });
+  PPA.forEach(function (p, i) { var q = planeP(p[0] + (i === 2 ? 40 * mv : 0), p[1], 0, sp); dot(q[0], q[1], 8 * P(t, 21.0 + i * .05, .4, 'back'), live); });
+  PPD.forEach(function (p, i) { var q = planeP(p[0], p[1], 0, sp); ring(q[0], q[1], 8 * P(t, 21.1 + i * .05, .4, 'back'), live, 2); });
+  var bk = P(t, 22.05, .45, 'out');
+  for (var tr = 6; tr >= 0; tr--) {
+    var b2 = P(t - tr * .025, 22.05, .45, 'out'), bx = lerp(PPA[0][0] + 18, PPA[2][0] + 40 * mv - 18, b2), by = lerp(PPA[0][1] + 10, PPA[2][1] + 6, b2), q2 = planeP(bx, by, 0, sp);
+    if (tr === 0) { dot(q2[0], q2[1], 5, live * P(t, 21.2, .3)); }
+    else dot(q2[0], q2[1], 4, live * .1 * (7 - tr) * (bk > 0 && bk < 1 ? 1 : 0));
+  }
 
   // Forge: the stand turns from three-quarter to true side view
-  var kr = P(t, 21.2, 1.8, 'io');
-  var c = { yaw: lerp(-28, -90, kr) * D2R, pitch: lerp(16, 0, kr) * D2R, persp: .35 * (1 - kr), D: 900, s: .6, ox: 572, oy: 330 };
-  function dr(i) { return P(t, 20.3 + i * .03, .6, 'io'); }
-  line3(FG.front, c, dr(0), { w: 2.4, a: live }); line3(FG.back, c, dr(1), { w: 2, a: live });
-  FG.edges.forEach(function (e, i) { line3(e, c, dr(2 + i), { w: 2, a: live }); });
-  line3(FG.phone, c, dr(6), { w: 2.4, a: live }); FG.phoneEdges.forEach(function (e, i) { line3(e, c, dr(7 + i), { w: 1.8, a: live }); });
-  FG.mags.forEach(function (m, i) { line3(m, c, dr(11 + i * .25), { w: 1.6, a: live }); });
-  FG.base.forEach(function (e, i) { line3(e, c, dr(14 + i * .5), { w: 2.2, a: live }); });
-  var aa = env(t, 23.05, 24.75, .3, .25);
+  var kr = P(t, 21.5, 1.7, 'io');
+  var c = { yaw: lerp(-28, -90, kr) * D2R, pitch: lerp(16, 0, kr) * D2R, persp: .35 * (1 - kr), D: 900, s: .42, ox: 322, oy: 782 };
+  function dr(i) { return P(t, 20.7 + i * .025, .55, 'io'); }
+  line3(FG.front, c, dr(0), { w: 2.2, a: live }); line3(FG.back, c, dr(1), { w: 1.8, a: live });
+  FG.edges.forEach(function (e, i) { line3(e, c, dr(2 + i), { w: 1.8, a: live }); });
+  line3(FG.phone, c, dr(6), { w: 2.2, a: live }); FG.phoneEdges.forEach(function (e, i) { line3(e, c, dr(7 + i), { w: 1.6, a: live }); });
+  FG.mags.forEach(function (mg, i) { line3(mg, c, dr(11 + i * .25), { w: 1.4, a: live }); });
+  FG.base.forEach(function (e, i) { line3(e, c, dr(14 + i * .5), { w: 2, a: live }); });
+  var aa = env(t, 23.3, 24.75, .3, .25);
   if (aa > 0) {
     var h = pr(FG.P3(0, 0, 0), c), top = pr(FG.P3(0, 480, 0), c), va = -Math.PI / 2, pa = Math.atan2(top[1] - h[1], top[0] - h[0]);
-    poly([[h[0], h[1]], [h[0], h[1] - 190]], P(t, 23.0, .3), { w: 1.6, col: DIM, dash: [8, 6], a: live });
-    poly(arc(h[0], h[1], 105, va, pa, 20), P(t, 23.1, .3), { w: 2.2, a: aa });
-    text('20°', h[0] + 14, h[1] - 96, { size: 26, col: WHITE, a: aa });
+    poly([[h[0], h[1]], [h[0], h[1] - 140]], P(t, 23.25, .3), { w: 1.4, col: DIM, dash: [7, 5], a: live });
+    poly(arc(h[0], h[1], 78, va, pa, 20), P(t, 23.35, .3), { w: 2, a: aa });
+    text('20°', h[0] + 12, h[1] - 70, { size: 22, col: WHITE, a: aa });
   }
 
   // Vantage: one phone behind the baseline calls the bounce
-  var st = { tau: 62 * D2R, cx: 540, cy: 742, persp: 1, s: .48 };
-  COURT.forEach(function (sg, i) { pline(sg[0], sg[1], st, P(t, 20.45 + i * .04, .45, 'io'), { w: 2.2, a: live }); });
-  pline([-222, 0], [222, 0], st, P(t, 20.9, .4, 'io'), { w: 3.2, a: live });
-  var ph = [540, 962];
-  poly(rrect(ph[0] - 11, ph[1] - 18, 22, 36, 5), P(t, 21.0, .35), { w: 2, a: live });
-  var fa = env(t, 21.1, 21.9, .3, .4) * live;
-  [[-200, -460], [200, -460]].forEach(function (cn) { var q = planeP(cn[0], cn[1], 0, st); poly([[ph[0], ph[1] - 18], [q[0], q[1]]], P(t, 21.1, .4, 'io'), { w: 1.3, col: DIM, dash: [7, 6], a: fa }); });
+  var st = { tau: 62 * D2R, cx: 774, cy: 722, persp: 1, s: .36 };
+  COURT.forEach(function (sg, i) { pline(sg[0], sg[1], st, P(t, 20.85 + i * .04, .45, 'io'), { w: 2, a: live }); });
+  pline([-222, 0], [222, 0], st, P(t, 21.3, .4, 'io'), { w: 2.8, a: live });
+  var ph = [774, 896];
+  poly(rrect(ph[0] - 9, ph[1] - 15, 18, 30, 4), P(t, 21.4, .35), { w: 1.8, a: live });
+  var fa = env(t, 21.5, 22.3, .3, .4) * live;
+  [[-200, -460], [200, -460]].forEach(function (cn) { var q = planeP(cn[0], cn[1], 0, st); poly([[ph[0], ph[1] - 15], [q[0], q[1]]], P(t, 21.5, .4, 'io'), { w: 1.2, col: DIM, dash: [6, 5], a: fa }); });
   if (t >= BALL.t0) {
     var gone = 1 - P(t, BALL.t1 + .04, .16);
     for (var g = 9; g >= 0; g--) {
       var tt = t - g * .022; if (tt < BALL.t0) continue;
       var b = ballAt(Math.min(tt, BALL.t2), BALL), s3 = planeP(b[0], b[1], b[2], st), sh = planeP(b[0], b[1], 0, st);
-      if (g === 0) { dot(sh[0], sh[1], 4 * sh[2], .25 * gone * live); dot(s3[0], s3[1], 5.5 * s3[2], gone * live); }
-      else dot(s3[0], s3[1], 5 * s3[2] * (1 - g / 11), (1 - g / 10) * .35 * gone * live);
+      if (g === 0) { dot(sh[0], sh[1], 3 * sh[2], .25 * gone * live); dot(s3[0], s3[1], 4.2 * s3[2], gone * live); }
+      else dot(s3[0], s3[1], 3.8 * s3[2] * (1 - g / 11), (1 - g / 10) * .35 * gone * live);
     }
   }
   if (t >= BALL.t1) {
     var mk = P(t, BALL.t1, .25, 'back'), mark = [];
-    for (var m = 0; m <= 32; m++) { var an = m / 32 * 2 * Math.PI, q2 = planeP(BALL.b[0] + 15 * mk * Math.cos(an), BALL.b[1] + 11 * mk * Math.sin(an), 0, st); mark.push([q2[0], q2[1]]); }
-    poly(mark, 1, { w: 2, fill: 'rgba(255,255,255,.18)', a: live });
+    for (var mm = 0; mm <= 32; mm++) { var an = mm / 32 * 2 * Math.PI, q3 = planeP(BALL.b[0] + 15 * mk * Math.cos(an), BALL.b[1] + 11 * mk * Math.sin(an), 0, st); mark.push([q3[0], q3[1]]); }
+    poly(mark, 1, { w: 1.8, fill: 'rgba(255,255,255,.18)', a: live });
     var sb = planeP(BALL.b[0], BALL.b[1], 0, st), rp = P(t, BALL.t1, .6);
-    ring(sb[0], sb[1], 8 + 30 * rp, (1 - rp) * live, 1.6);
-    if (t >= 22.48) {
-      var ia = P(t, 22.48, .25, 'back');
-      ctx.save(); ctx.translate(sb[0] + 26, sb[1] - 18); ctx.scale(ia, ia);
-      text('IN', 0, 0, { sans: true, weight: 800, size: 40, col: WHITE, ls: -1, a: live });
+    ring(sb[0], sb[1], 6 + 24 * rp, (1 - rp) * live, 1.4);
+    if (t >= 23.12) {
+      var ia = P(t, 23.12, .25, 'back');
+      ctx.save(); ctx.translate(sb[0] + 20, sb[1] - 14); ctx.scale(ia, ia);
+      text('IN', 0, 0, { sans: true, weight: 800, size: 32, col: WHITE, ls: -1, a: live });
       ctx.restore();
     }
   }
@@ -815,8 +880,8 @@ var NAME_Y = 1000, SUB_Y = 1122, DET_Y = 1240;
   { t: 'US import duty and margin for every\nproduct in a Shopify store', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 16.55, tout: 19.75 },
   { t: 'Live on the Shopify App Store', x: 96, y: DET_Y, size: 26, cls: 'mono', mode: 'type', tin: 17.0, tout: 19.7 },
 
-  { t: 'On the bench', x: 96, y: NAME_Y, size: 104, tin: 20.45, tout: 24.7 },
-  { t: 'Forge (a MagSafe stand) and Vantage\n(tennis line calls from one phone)', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 20.7, tout: 24.7 },
+  { t: 'Smaller projects', x: 96, y: NAME_Y + 8, size: 92, tin: 20.45, tout: 24.7 },
+  { t: 'Two live and two still on the bench', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 20.7, tout: 24.7 },
 
   { t: 'I do the same for\ninventors and\nsmall companies', x: 96, y: 126, size: 74, tin: 25.3, tout: 29.45 },
   { t: 'From the first sketch to a supplier,\nand the website when it\'s ready', x: 96, y: SUB_Y, size: 40, cls: 'sub', mode: 'word', tin: 25.8, tout: 29.45 },
@@ -830,7 +895,7 @@ var NAME_Y = 1000, SUB_Y = 1122, DET_Y = 1240;
 ].forEach(addText);
 
 /* header strip */
-var HDR = [[0, 'Fig. 1 · KettleCross'], [9.4, 'Fig. 2 · Mobility Age'], [16.2, 'Fig. 3 · Duty Diligence'], [20.25, 'Figs. 4 and 5 · On the bench'], [25.25, 'In The Park Consulting']];
+var HDR = [[0, 'Fig. 1 · KettleCross'], [9.4, 'Fig. 2 · Mobility Age'], [16.2, 'Fig. 3 · Duty Diligence'], [20.25, 'Figs. 4 to 7 · Smaller projects'], [25.25, 'In The Park Consulting']];
 var hdrL = document.createElement('div');
 hdrL.className = 't mono'; hdrL.style.cssText = 'left:72px;top:64px;font-size:22px;color:#fff'; hdrL.textContent = 'Joshua Hume';
 TXT.appendChild(hdrL);
