@@ -144,7 +144,7 @@ h2 {
 }
 .sec-head p { color: var(--ink-2); max-width: 34em; }
 
-/* Since April: the blueprint band */
+/* Blueprint band */
 .print {
   background-color: var(--print); color: var(--print-ink);
   background-image:
@@ -185,6 +185,9 @@ h2 {
 .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; }
 .status.live { color: var(--blue); }
 .status.live::before { background: currentColor; }
+.card.wide { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; }
+.card.wide .plate { border-bottom: 0; border-right: 1px solid var(--ink); }
+.card.wide .body { justify-content: center; }
 .card .body { padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
 .card h3 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; font-stretch: 118%; line-height: 1.1; }
 .card h3 small { font-size: 15px; font-weight: 500; color: var(--ink-3); letter-spacing: 0; margin-left: 6px; }
@@ -205,17 +208,18 @@ h2 {
 
 /* Contact */
 .contact { border-top: 1px solid var(--ink); }
-.contact .lede { font-size: 20px; color: var(--ink-2); max-width: 34em; margin-bottom: 36px; }
-.links { border-top: 1px solid var(--ink); max-width: 760px; }
+.contact .lede { font-size: 20px; color: var(--print-ink-2); max-width: 34em; margin-bottom: 36px; }
+.links { border: 2px solid var(--print-ink); max-width: 760px; }
 .links a {
   display: grid; grid-template-columns: 140px 1fr auto; gap: 16px; align-items: baseline;
-  padding: 18px 0; border-bottom: 1px solid var(--rule);
-  color: var(--ink); text-decoration: none; font-size: 22px; font-weight: 600;
+  padding: 18px 22px; border-bottom: 1px solid rgba(255,255,255,.35);
+  color: var(--print-ink); text-decoration: none; font-size: 22px; font-weight: 600;
   font-stretch: 104%;
 }
-.links a span:first-child { font-family: var(--mono); font-size: 12.5px; font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
-.links a span:last-child { color: var(--blue); font-weight: 400; }
-.links a:hover { color: var(--blue); }
+.links a:last-child { border-bottom: 0; }
+.links a span:first-child { font-family: var(--mono); font-size: 12.5px; font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--print-ink-3); }
+.links a span:last-child { color: var(--print-ink-2); font-weight: 400; }
+.links a:hover { color: var(--print-ink); background: rgba(255,255,255,.06); }
 
 footer { border-top: 1px solid var(--ink); padding: 22px 0; }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-3); }
@@ -225,6 +229,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   .hero .fig { justify-self: start; max-width: 440px; }
   .log li { grid-template-columns: 1fr; gap: 6px; }
   .work { grid-template-columns: 1fr; }
+  .card.wide { display: flex; flex-direction: column; }
+  .card.wide .plate { border-right: 0; border-bottom: 1px solid var(--rule); }
   .two { grid-template-columns: 1fr; gap: 40px; }
 }
 @media (max-width: 640px) {
@@ -253,8 +259,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   <div class="wrap">
     <a class="name" href="./">Joshua Hume</a>
     <nav>
-      <a href="#since-april">Since April</a>
       <a href="#work">Work</a>
+      <a class="hide-sm" href="#day-job">Day job</a>
       <a class="hide-sm" href="#background">Background</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -298,24 +304,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         <text class="cap" x="0" y="372">FIG. 1</text>
       </svg>
     </figure>
-  </div>
-</section>
-
-<section id="since-april" class="print">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>Since April</h2>
-      <p>The site was last updated in April and quite a lot has happened since, Mobility Age especially.</p>
-    </div>
-    <ol class="log">
-      <li><time datetime="2026-09-21">21 Sep 2026</time><h3>Mobility Age 2.4</h3><p>Push reminders for the daily move and the day-14 re-test, a consent banner built for UK rules and self-serve account deletion.</p></li>
-      <li><time datetime="2026-08-18">Aug 2026</time><h3>Mobility Age for professionals</h3><p>PTs and physios can assess a client in the session, track progress over time, flag overdue re-tests and print a client report. 14-day trial, no card needed.</p></li>
-      <li><time datetime="2026-07-24">24 Jul 2026</time><h3>Duty Diligence</h3><p>Live on the Shopify App Store. It shows merchants importing into the US the duty on every product and what that does to their margin.</p></li>
-      <li><time datetime="2026-07-01">Jul 2026</time><h3>Pitch Persona</h3><p>100 match scenarios across hockey and football, read-aloud for younger players and a Pro unlock ready to switch on.</p></li>
-      <li><time datetime="2026-06-30">Jun 2026</time><h3>Vantage</h3><p>A tennis prototype. One phone behind the baseline tracks the ball for line calls and match stats.</p></li>
-      <li><time datetime="2026-06-11">11 Jun 2026</time><h3>Mobility Age relaunch</h3><p>Hands-free capture with voice guidance, squat analysis on the phone itself and a first result in about 30 seconds.</p></li>
-      <li><time datetime="2026-05-11">May 2026</time><h3>Forge MagSafe stand v2.0</h3><p>Ten versions in April, then v2.0 in May. 18 N52 magnets in a 57 mm ring and a 20° face tilt.</p></li>
-    </ol>
   </div>
 </section>
 
@@ -375,7 +363,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         </div>
         <div class="body">
           <h3>Mobility Age</h3>
-          <p>Four photos on your phone (squat, forward fold, overhead reach and lunge) give you a mobility age, measured against published clinical norms. The pose model is accurate to about 4 to 6 degrees, against 10 to 12 on the version it replaced. It's free to try, Premium is £3.99 a month and professionals pay £47 a month. Co-founded with Dan Blackman.</p>
+          <p>Four photos on your phone (squat, forward fold, overhead reach and lunge) give you a mobility age, measured against published clinical norms. Capture is hands-free with voice guidance and the pose model is accurate to about 4 to 6 degrees, against 10 to 12 on the version it replaced.</p>
+          <p>It's free to try and Premium is £3.99 a month. PTs and physios pay £47 a month to assess clients in the session, track them over time and print a report for each one.</p>
           <a class="go" href="https://mobilityage.co.uk">mobilityage.co.uk</a>
         </div>
       </article>
@@ -423,7 +412,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         </div>
         <div class="body">
           <h3>Forge</h3>
-          <p>Printable desk accessories, starting with a MagSafe stand. 18 N52 magnets sit in a 57 mm ring to Apple's spec, the face tilts at 20° and it prints in just under three hours on a Bambu A1 Mini.</p>
+          <p>Printable desk accessories, starting with a MagSafe stand that took eleven versions to get right. 18 N52 magnets sit in a 57 mm ring to Apple's spec, the face tilts at 20° and it prints in just under three hours on a Bambu A1 Mini.</p>
         </div>
       </article>
 
@@ -469,8 +458,30 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
         </div>
         <div class="body">
           <h3>Pitch Persona</h3>
-          <p>A game that teaches young hockey and football players (roughly 9 to 11) to read the game, with 100 match scenarios and 300 decisions. No ads, no chat and no tracking.</p>
+          <p>A game that teaches young hockey and football players (roughly 9 to 11) to read the game, with 100 match scenarios, 300 decisions and read-aloud for younger players. No ads, no chat and no tracking.</p>
           <a class="go" href="https://pitchpersona.netlify.app">pitchpersona.netlify.app</a>
+        </div>
+      </article>
+
+      <article class="card wide">
+        <div class="plate">
+          <span class="status">Prototype</span>
+          <figure class="fig" aria-hidden="true">
+            <svg viewBox="0 0 440 300">
+              <path class="s" d="M70 270 L370 270 L318 40 L122 40 Z"/>
+              <path class="s" d="M98 270 L139 40 M342 270 L301 40"/>
+              <path class="s" d="M110 196 L330 196 M220 196 L220 270 M220 40 L220 66"/>
+              <path class="ph" d="M206 250 Q236 60 268 112"/>
+              <circle class="dot" cx="268" cy="112" r="5"/>
+              <path class="ld" d="M252 120 L284 104"/>
+              <text x="290" y="100">IN</text>
+            </svg>
+          </figure>
+          <span class="figno mono">Fig. 7</span>
+        </div>
+        <div class="body">
+          <h3>Vantage</h3>
+          <p>A tennis app that tracks the ball from one phone behind the baseline, so club players get line calls and match stats without any extra kit. It's a prototype for now, built to test whether one phone in a browser is enough.</p>
         </div>
       </article>
 
@@ -508,7 +519,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   </div>
 </section>
 
-<section class="contact" id="contact">
+<section class="contact print" id="contact">
   <div class="wrap">
     <h2 style="margin-bottom:20px">Get in touch</h2>
     <p class="lede">If you're working on something you want to get made, email is the best way to get hold of me and I'll come back to you.</p>

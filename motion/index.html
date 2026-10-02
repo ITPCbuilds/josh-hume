@@ -137,15 +137,15 @@ svg text { font-family: var(--mono); font-weight: 500; fill: var(--ink-3); lette
         <span class="mask"><span data-in="12.82" data-fx="rise">a mobility age</span></span>
       </div>
       <div class="abs mono" style="left:96px;top:1160px;font-size:30px;color:#fff" data-in="14.3" data-fx="fade">Pose error 4 to 6° · was 10 to 12°</div>
-      <div class="abs mono lbl" style="left:96px;top:1210px" data-in="15.2" data-fx="fade">mobilityage.co.uk · v2.4 shipped 21 Sep</div>
+      <div class="abs mono lbl" style="left:96px;top:1210px" data-in="15.2" data-fx="fade">mobilityage.co.uk · also for PTs and physios</div>
     </section>
 
-    <!-- 3 · Since April -->
+    <!-- 3 · Other work -->
     <section class="scene" style="top:4050px">
-      <div class="abs mono lbl" style="left:96px;top:120px" data-in="18.5" data-fx="fade">Sheet 3 · Shipped May to September 2026</div>
-      <div class="abs big" style="left:92px;top:168px;font-size:112px"><span class="mask"><span data-in="18.6" data-fx="rise">Since April</span></span></div>
+      <div class="abs mono lbl" style="left:96px;top:120px" data-in="18.5" data-fx="fade">Sheet 3 · In The Park Consulting Ltd</div>
+      <div class="abs big" style="left:92px;top:168px;font-size:112px"><span class="mask"><span data-in="18.6" data-fx="rise">Other work</span></span></div>
       <svg class="abs" style="left:0;top:0" width="1080" height="1350" viewBox="0 0 1080 1350">
-        <path id="spine" class="ld" d="M140 360 L140 1250" stroke="#fff" stroke-width="2.5" pathLength="1" stroke-dasharray="1 1"/>
+        <path id="spine" class="ld" d="M140 380 L140 1170" stroke="#fff" stroke-width="2.5" pathLength="1" stroke-dasharray="1 1"/>
       </svg>
       <div id="log"></div>
     </section>
@@ -388,34 +388,32 @@ svg text { font-family: var(--mono); font-weight: 500; fill: var(--ink-3); lette
     });
   })();
 
-  // ---------- Since April log ----------
+  // ---------- Other work ----------
   (function () {
     var host = document.getElementById('log');
     var items = [
-      ['May', 'Forge MagSafe stand v2.0', '18 magnets in a 57 mm ring', 'ring'],
-      ['Jun', 'Mobility Age relaunch', 'Hands-free capture, voice guidance', 'phone'],
-      ['Jul', 'Duty Diligence', 'Live on the Shopify App Store', 'steps'],
-      ['Jul', 'Pitch Persona', '100 match scenarios, hockey and football', 'pitch'],
-      ['Aug', 'Mobility Age for PTs', 'Assess clients in the session', 'clip'],
-      ['Sep', 'Mobility Age 2.4', 'Reminders, consent, account deletion', 'bell']
+      ['Duty Diligence', 'US import duty and margin for Shopify stores', 'steps'],
+      ['Forge', 'MagSafe stand with an 18-magnet ring', 'ring'],
+      ['Thrown', 'Design 3D-printable vases and planters', 'vase'],
+      ['Pitch Persona', '100 match scenarios, hockey and football', 'pitch'],
+      ['Vantage', 'Tennis line calls from one phone (prototype)', 'court']
     ];
-    var y0 = 380, gap = 148;
+    var y0 = 410, gap = 170;
     var spine = document.getElementById('spine');
-    tracks.push(function (t) { spine.setAttribute('stroke-dashoffset', (1 - P(t, 19.0, 4.4, 'io')).toFixed(4)); });
+    tracks.push(function (t) { spine.setAttribute('stroke-dashoffset', (1 - P(t, 19.0, 4.0, 'io')).toFixed(4)); });
     items.forEach(function (it, i) {
-      var a = 19.25 + i * 0.68, y = y0 + i * gap;
+      var a = 19.3 + i * 0.8, y = y0 + i * gap;
       var row = document.createElement('div');
       row.className = 'abs';
       row.style.cssText = 'left:0;top:' + y + 'px;width:1080px;height:120px';
       row.innerHTML =
-        '<div class="mono" style="position:absolute;left:180px;top:6px;font-size:26px;color:var(--ink-3)">' + it[0] + '</div>' +
-        '<div style="position:absolute;left:290px;top:-2px;font-size:44px;font-weight:700;font-stretch:108%;letter-spacing:-.015em">' + it[1] + '</div>' +
-        '<div style="position:absolute;left:290px;top:56px;font-size:32px;color:var(--ink-2);font-weight:500">' + it[2] + '</div>';
+        '<div style="position:absolute;left:196px;top:-2px;font-size:46px;font-weight:700;font-stretch:110%;letter-spacing:-.015em">' + it[0] + '</div>' +
+        '<div style="position:absolute;left:196px;top:58px;font-size:32px;color:var(--ink-2);font-weight:500">' + it[1] + '</div>';
       host.appendChild(row);
       var svg = el('svg', { width: 1080, height: 140, viewBox: '0 0 1080 140', style: 'position:absolute;left:0;top:' + (y - 10) + 'px' }, host);
       var node = el('circle', { cx: 140, cy: 32, r: 11, fill: '#0F2A82', stroke: '#fff', 'stroke-width': 3 }, svg);
       var ic = el('g', { transform: 'translate(950 34)' }, svg);
-      icon(it[3], ic);
+      icon(it[2], ic);
       ic.querySelectorAll('*').forEach(function (n, j) {
         if (n.tagName === 'text') return;
         n.setAttribute('pathLength', '1'); n.setAttribute('stroke-dasharray', '1 1');
@@ -440,6 +438,10 @@ svg text { font-family: var(--mono); font-weight: 500; fill: var(--ink-3); lette
         add('path', { d: 'M-40 34 L-40 -36 M-40 34 L42 34' }); add('path', { d: 'M-40 18 L-18 18 L-18 4 L6 4 L6 -20 L28 -20 L28 -10 L42 -10' });
       } else if (kind === 'pitch') {
         add('rect', { x: -44, y: -30, width: 88, height: 60 }); add('path', { d: 'M0 -30 L0 30' }); add('circle', { cx: 0, cy: 0, r: 11 });
+      } else if (kind === 'vase') {
+        add('path', { d: 'M-14 -34 C-24 -18 -30 -4 -28 10 C-26 26 -16 30 -18 40 M14 -34 C24 -18 30 -4 28 10 C26 26 16 30 18 40' }); add('ellipse', { cx: 0, cy: -34, rx: 14, ry: 4 });
+      } else if (kind === 'court') {
+        add('path', { d: 'M-40 34 L40 34 L26 -34 L-26 -34 Z M-30 34 L-19 -34 M30 34 L19 -34 M-34 10 L34 10 M0 10 L0 34' });
       } else if (kind === 'clip') {
         add('rect', { x: -28, y: -36, width: 56, height: 72, rx: 4 }); add('path', { d: 'M-14 -12 L14 -12 M-14 4 L14 4 M-14 20 L6 20' });
       } else if (kind === 'bell') {
