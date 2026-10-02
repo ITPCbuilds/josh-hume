@@ -43,8 +43,9 @@ body.render { display: block; min-height: 0; }
 (function () {
 'use strict';
 var W = 1080, H = 1350, D2R = Math.PI / 180;
-var DURATION = 38.5;
-window.DURATION = DURATION;
+var DURATION = 38.5;   // timeline length in scene seconds
+var SPEED = 0.75;      // playback rate: the video runs DURATION / SPEED seconds
+window.DURATION = DURATION / SPEED;
 
 var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
 var WHITE = '#FFFFFF', SOFT = '#C9D4F7', DIM = '#93A8EC', BG = '#0F2A82';
@@ -944,7 +945,7 @@ function seek(t) {
   updateText(t); updateHeader(t);
   flash.style.opacity = maFlash(t).toFixed(3);
 }
-window.seek = seek;
+window.seek = function (t) { seek(t * SPEED); };
 
 var render = /render=1/.test(location.search);
 document.fonts.ready.then(function () {
@@ -953,7 +954,7 @@ document.fonts.ready.then(function () {
   var t0 = null, hold = 1.5;
   (function loop(now) {
     if (t0 === null) t0 = now;
-    var t = ((now - t0) / 1000) % (DURATION + hold);
+    var t = ((now - t0) / 1000 * SPEED) % (DURATION + hold);
     seek(Math.min(t, DURATION));
     requestAnimationFrame(loop);
   })(performance.now());
